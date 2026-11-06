@@ -487,7 +487,7 @@ const CONFIG = {
   greeting: "Halo Ren",
   siteBase: "https://renzo-gith.github.io/custom-chat-widget/", // dipakai kalau halaman dibuka di luar GitHub Pages
   discordUser: "renaldy_afif",                    // username Discord untuk order lewat DM. Kosong = tombol Kirim disembunyikan
-  discord: "https://discord.com/channels/@me",   // halaman Discord yang dibuka (daftar teman). Bisa diganti link profil https://discord.com/users/USER_ID
+  discord: "https://discord.gg/TaWeYUFw",        // link undangan pertemanan dari menu Add Friend (cek masa berlakunya)
   contact: "",   // kontak yang ditampilkan di bawah tombol, contoh "Discord: renzo.widget"
   packages: [
     { id:"recolor", name:"Recolor", tone:"sky", time:"2–3 hari", price:"Rp150.000",
@@ -780,12 +780,13 @@ document.getElementById("orderForm").addEventListener("input", renderOrder);
 document.getElementById("orderForm").addEventListener("change", renderOrder);
 document.getElementById("orderForm").addEventListener("submit", e => e.preventDefault());
 // Discord tidak bisa diisi otomatis, jadi pesan disalin dulu lalu Discord dibuka
-oSend.addEventListener("click", () => copy(orderText(), "Pesan disalin. Tambahkan " + CONFIG.discordUser + " sebagai teman, lalu tempel di DM."));
+oSend.addEventListener("click", () => copy(orderText(), "Pesan disalin. Terima undangan pertemanan, lalu tempel di DM."));
 document.getElementById("o-copy").addEventListener("click", () => copy(orderText(), "Pesan order disalin."));
 const contactEl = document.getElementById("o-contact");
 if (CONFIG.discordUser) {
-  contactEl.innerHTML = 'Pesan order otomatis tersalin. Di Discord, klik <b>Add Friend</b> dan ketik <b class="dc-user">' + esc(CONFIG.discordUser) +
-    '</b> <button type="button" class="dc-copy" id="o-copy-user">Salin username</button>, lalu tempel pesannya di DM setelah permintaan diterima.';
+  contactEl.innerHTML = 'Pesan order otomatis tersalin. Terima undangan pertemanan di Discord, lalu tempel pesannya di DM. ' +
+    'Kalau link tidak terbuka, klik <b>Add Friend</b> dan ketik <b class="dc-user">' + esc(CONFIG.discordUser) +
+    '</b> <button type="button" class="dc-copy" id="o-copy-user">Salin username</button>';
   document.getElementById("o-copy-user").addEventListener("click", () => copy(CONFIG.discordUser, "Username Discord disalin."));
 } else if (CONFIG.contact) contactEl.textContent = "Atau kirim manual ke " + CONFIG.contact;
 else contactEl.hidden = true;
