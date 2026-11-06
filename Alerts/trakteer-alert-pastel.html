@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<!--
+  PASTEL ALERT — Trakteer alert overlay, satu set dengan Pastel Chat.
+  Pasang sebagai Browser Source di OBS (1920x1080).
+
+  Parameter URL:
+    ?id=creator-stream.HASH.KEY   channel Trakteer (atau ?hash=...&key=...)
+    &scale=1                      perbesar/perkecil (sama seperti Pastel Chat)
+    &tone=teal                    warna alert biasa: teal | pink | green | cream
+    &bigtone=pink                 warna alert besar
+    &big=100000                   nominal untuk alert besar
+    &dur=8                        durasi alert (detik)
+    &min=0                        minimal nominal yang dimunculkan (Rp)
+    &pos=center|top|bottom        posisi alert
+    &sound=0  &soundUrl=...mp3  &vol=0.6
+    &tts=1  &ttsLang=id-ID        bacakan pesan
+    &demo=1                       panel tombol test (jangan dipakai di OBS)
+    &debug=1                      log payload mentah ke console
+-->
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Pastel Alert — Trakteer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@600;700&family=Fredoka:wght@500;600&display=swap');
+
+  :root { --k: 1; --dur: 8s; --ink: #63423C; }
+
+  html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; font-family: 'Quicksand', sans-serif; }
+
+  #stage { position: fixed; top: 0; left: 0; right: 0; bottom: 0; display: flex; justify-content: center; align-items: center;
+    padding: 60px; box-sizing: border-box; pointer-events: none; }
+  #stage.top { align-items: flex-start; } #stage.bottom { align-items: flex-end; }
+
+  /* ---------- palet (sama persis dengan Pastel Chat) ---------- */
+  .tone-cream { --fill:#FDF5E0; --line:#63423C; --ring:#FDF5E0; --text:#DAB879; --tag:#DAB879; --tag-text:#FDF5E0; }
+  .tone-green { --fill:#D0DF5E; --line:#3E5C1E; --ring:#D0DF5E; --text:#73A340; --tag:#73A340; --tag-text:#D0DF5E; }
+  .tone-teal  { --fill:#84D3DA; --line:#285460; --ring:#84D3DA; --text:#609BAB; --tag:#609BAB; --tag-text:#84D3DA; }
+  .tone-pink  { --fill:#FFC5B7; --line:#F27771; --ring:#FFC5B7; --text:#FE847E; --tag:#FE847E; --tag-text:#FFC5B7; }
+
+  /* ---------- alert ---------- */
+  .alert { position: relative; display: flex; flex-direction: column; align-items: flex-start; padding: 2px;
+    animation: bounceIn .6s cubic-bezier(.34, 1.56, .64, 1) both; }
+  .alert.out { animation: fadeOut .6s ease-in forwards; }
+
+  .badge { position: relative; z-index: 2; display: inline-flex; align-items: center; gap: calc(6px * var(--k));
+    max-width: calc(100% - 60px * var(--k)); box-sizing: border-box;
+    margin-left: calc(44px * var(--k)); margin-bottom: calc(-22px * var(--k));
+    padding: calc(6px * var(--k)) calc(22px * var(--k));
+    background: var(--tag); color: var(--tag-text);
+    border: calc(2px * var(--k)) solid var(--line); border-radius: calc(14px * var(--k));
+    box-shadow: 0 0 0 calc(2px * var(--k)) var(--ring);
+    font-family: 'Fredoka', 'Quicksand', sans-serif; font-size: calc(18px * var(--k)); font-weight: 500; line-height: 1.2;
+    white-space: nowrap; animation: wiggle 1.8s ease-in-out .7s infinite; transform-origin: 30% 100%; }
+  .badge .nm { overflow: hidden; text-overflow: ellipsis; max-width: calc(320px * var(--k)); }
+
+  .bubble { position: relative; z-index: 1; box-sizing: border-box;
+    min-width: calc(380px * var(--k)); max-width: calc(600px * var(--k));
+    padding: calc(30px * var(--k)) calc(40px * var(--k)) calc(28px * var(--k));
+    background: var(--fill); color: var(--text);
+    border: calc(2px * var(--k)) solid var(--line); border-radius: calc(40px * var(--k));
+    box-shadow: 0 0 0 calc(2px * var(--k)) var(--ring);
+    font-weight: 700; line-height: 1.25; overflow-wrap: anywhere; }
+
+  .sub { font-size: calc(18px * var(--k)); font-weight: 700; }
+  .sub b { font-weight: 700; }
+  .sub img { height: 1.25em; vertical-align: -.3em; margin-left: 4px; }
+
+  .amount { font-family: 'Fredoka', 'Quicksand', sans-serif; font-weight: 600; font-size: calc(46px * var(--k)); line-height: 1.1;
+    color: #FFFDF7; -webkit-text-stroke: calc(5px * var(--k)) var(--line); paint-order: stroke fill;
+    text-shadow: 0 calc(4px * var(--k)) 0 var(--line); margin: calc(4px * var(--k)) 0 0; letter-spacing: .01em; }
+  .big .amount { font-size: calc(58px * var(--k)); }
+
+  .msg { margin-top: calc(14px * var(--k)); padding: calc(12px * var(--k)) calc(18px * var(--k));
+    background: rgba(255, 255, 255, .45); border: calc(2px * var(--k)) dashed var(--line); border-radius: calc(20px * var(--k));
+    font-size: calc(19px * var(--k)); color: var(--line);
+    display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
+  .msg:empty { display: none; }
+
+  .bar { margin-top: calc(16px * var(--k)); height: calc(6px * var(--k)); border-radius: 99px; background: rgba(0, 0, 0, .08); overflow: hidden; }
+  .bar i { display: block; height: 100%; border-radius: 99px; background: var(--line); opacity: .55; transform-origin: left;
+    animation: shrink var(--dur) linear .6s both; }
+
+  /* ---------- konfeti stiker ---------- */
+  .fx { position: absolute; left: calc(90px * var(--k)); top: calc(20px * var(--k)); width: 0; height: 0; z-index: 3; }
+  .cf { position: absolute; width: calc(14px * var(--k)); height: calc(14px * var(--k)); margin: calc(-7px * var(--k));
+    background: var(--c); border: calc(2px * var(--k)) solid var(--ink); box-sizing: border-box;
+    animation: burst 1.2s cubic-bezier(.1, .8, .3, 1) var(--d) both; }
+  .cf.round { border-radius: 50%; }
+  .cf.heart { border-radius: 50% 50% 0 50%; }
+
+  @keyframes bounceIn { 0% { opacity: 0; transform: translateY(30px) scale(.8); } 100% { opacity: 1; transform: none; } }
+  @keyframes fadeOut { to { opacity: 0; transform: translateY(-50px); } }
+  @keyframes wiggle { 0%, 100% { transform: rotate(0); } 10% { transform: rotate(-4deg); } 20% { transform: rotate(3deg); } 30% { transform: rotate(0); } }
+  @keyframes shrink { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+  @keyframes burst { 0% { opacity: 1; transform: translate(0, 0) rotate(0) scale(.4); }
+    25% { opacity: 1; transform: translate(calc(var(--x) * .6), calc(var(--y) * .6)) rotate(90deg) scale(1); }
+    100% { opacity: 0; transform: translate(var(--x), calc(var(--y) + 60px)) rotate(var(--r)) scale(.8); } }
+
+  /* panel demo & hint */
+  #demo { position: fixed; left: 16px; bottom: 16px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+    font: 700 13px 'Quicksand', system-ui; pointer-events: auto; }
+  #demo button { padding: 8px 14px; border: 2px solid #63423C; border-radius: 12px; background: #FDF5E0; color: #63423C; cursor: pointer; font: inherit; }
+  #demo .st { padding: 6px 10px; border-radius: 10px; background: #0009; color: #fff; }
+  #hint { position: fixed; top: 16px; left: 16px; padding: 10px 14px; border-radius: 10px; background: #000b; color: #fff; font: 600 14px system-ui; }
+</style>
+</head>
+<body>
+<div id="stage"></div>
+
+<script>
+(() => {
+  // ---------- konfigurasi ----------
+  const P = new URLSearchParams(location.search);
+  const num = (k, d) => { const v = parseFloat(P.get(k)); return isNaN(v) ? d : v; };
+  const TONES = ['teal', 'pink', 'green', 'cream'];
+  const tone = (k, d) => TONES.includes(P.get(k)) ? P.get(k) : d;
+  const CFG = {
+    dur: num('dur', 8) * 1000,
+    min: num('min', 0),
+    big: num('big', 100000),
+    tone: tone('tone', 'teal'),
+    bigTone: tone('bigtone', 'pink'),
+    sound: P.get('sound') !== '0',
+    soundUrl: P.get('soundUrl') || '',
+    vol: Math.min(1, Math.max(0, num('vol', 0.6))),
+    tts: P.get('tts') === '1',
+    ttsLang: P.get('ttsLang') || 'id-ID',
+    demo: P.get('demo') === '1',
+    debug: P.get('debug') === '1',
+  };
+  const log = (...a) => CFG.debug && console.log('[pastel-alert]', ...a);
+
+  const root = document.documentElement.style, stage = document.getElementById('stage');
+  root.setProperty('--k', Math.min(3, Math.max(0.4, num('scale', 1))));
+  root.setProperty('--dur', CFG.dur / 1000 + 's');
+  if (['top', 'bottom'].includes(P.get('pos'))) stage.classList.add(P.get('pos'));
+
+  // channel: ?id=creator-stream.HASH.KEY  atau  ?hash=..&key=..
+  let main = P.get('id') || (P.get('hash') && P.get('key') ? `${P.get('hash')}.${P.get('key')}` : '');
+  if (main && !main.startsWith('creator-stream')) main = 'creator-stream.' + main;
+  const channels = main ? [main, main.replace(/^creator-stream\./, 'creator-stream-test.')] : [];
+
+  // ---------- normalisasi payload ----------
+  const pick = (o, keys) => {
+    for (const k of keys) {
+      const v = k.split('.').reduce((a, p) => (a == null ? a : a[p]), o);
+      if (v !== undefined && v !== null && v !== '') return v;
+    }
+  };
+  const toNumber = v => typeof v === 'number' ? v : parseInt(String(v || '').replace(/[^\d]/g, ''), 10) || 0;
+  const rupiah = n => 'Rp ' + n.toLocaleString('id-ID');
+
+  function normalize(d) {
+    const rawAmount = pick(d, ['price_number', 'amount', 'price', 'net_amount']);
+    const amount = toNumber(rawAmount);
+    return {
+      name: String(pick(d, ['supporter_name', 'display_name', 'name', 'supporter.name']) || 'Seseorang'),
+      qty: toNumber(pick(d, ['quantity', 'qty'])) || 1,
+      unit: String(pick(d, ['unit', 'unit_name']) || ''),
+      unitIcon: pick(d, ['unit_icon', 'unit_image']) || '',
+      amount,
+      amountText: typeof rawAmount === 'string' && /rp/i.test(rawAmount) ? rawAmount : (amount ? rupiah(amount) : ''),
+      message: String(pick(d, ['supporter_message', 'message', 'note']) || ''),
+    };
+  }
+
+  // ---------- antrean ----------
+  const queue = []; let busy = false;
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+  function enqueue(a) {
+    if (a.amount < CFG.min) return log('di bawah minimal, dilewati', a);
+    queue.push(a); if (!busy) next();
+  }
+  async function next() {
+    const a = queue.shift();
+    if (!a) { busy = false; return; }
+    busy = true;
+    await show(a);
+    await sleep(500);
+    next();
+  }
+
+  // ---------- render (textContent, aman dari HTML injeksi) ----------
+  const el = (tag, cls, txt) => { const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; };
+  const CONFETTI = ['#FDF5E0', '#D0DF5E', '#84D3DA', '#FFC5B7', '#DAB879', '#FE847E'];
+
+  async function show(a) {
+    const isBig = a.amount >= CFG.big;
+    const card = el('div', `alert tone-${isBig ? CFG.bigTone : CFG.tone}${isBig ? ' big' : ''}`);
+
+    const badge = el('div', 'badge');
+    badge.append(el('span', '', isBig ? '♛' : '♥'), el('span', 'nm', a.name));
+
+    const bubble = el('div', 'bubble');
+    const sub = el('div', 'sub', 'mentraktir ');
+    const unit = el('b', '', `${a.qty} ${a.unit}`.trim());
+    if (a.unitIcon) { const ic = el('img'); ic.src = a.unitIcon; ic.onerror = () => ic.remove(); unit.append(ic); }
+    sub.append(unit, isBig ? ' ✦' : '');
+    const bar = el('div', 'bar'); bar.append(el('i'));
+    bubble.append(sub, el('div', 'amount', a.amountText), el('div', 'msg', a.message), bar);
+
+    const fx = el('div', 'fx');
+    const n = isBig ? 24 : 12, shapes = ['round', 'heart', ''];
+    for (let i = 0; i < n; i++) {
+      const c = el('i', 'cf ' + shapes[i % 3]);
+      const ang = -Math.PI * (0.05 + Math.random() * 0.9), r = 80 + Math.random() * (isBig ? 220 : 140);
+      c.style.cssText = `--x:${Math.cos(ang) * r}px;--y:${Math.sin(ang) * r}px;--r:${(Math.random() * 2 - 1) * 400}deg;` +
+                        `--c:${CONFETTI[i % CONFETTI.length]};--d:${0.15 + Math.random() * 0.25}s`;
+      fx.append(c);
+    }
+
+    card.append(badge, bubble, fx);
+    stage.append(card);
+    playSound(isBig);
+    const ttsDone = speak(a);
+    await sleep(CFG.dur + 600);
+    await Promise.race([ttsDone, sleep(15000)]);
+    card.classList.add('out');
+    await sleep(600);
+    card.remove();
+  }
+
+  // ---------- suara (chime lembut) ----------
+  let actx;
+  function playSound(isBig) {
+    if (!CFG.sound) return;
+    if (CFG.soundUrl) { const au = new Audio(CFG.soundUrl); au.volume = CFG.vol; au.play().catch(() => {}); return; }
+    try {
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      const notes = isBig ? [784, 988, 1175, 1568, 1976] : [880, 1175, 1568];
+      notes.forEach((f, i) => {
+        const o = actx.createOscillator(), g = actx.createGain(), t = actx.currentTime + i * 0.1;
+        o.type = 'sine'; o.frequency.value = f;
+        g.gain.setValueAtTime(0, t);
+        g.gain.linearRampToValueAtTime(CFG.vol * 0.45, t + 0.015);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+        o.connect(g).connect(actx.destination); o.start(t); o.stop(t + 0.65);
+      });
+    } catch (e) { log('audio error', e); }
+  }
+  function speak(a) {
+    if (!CFG.tts || !('speechSynthesis' in window)) return Promise.resolve();
+    return new Promise(res => {
+      setTimeout(() => {
+        const u = new SpeechSynthesisUtterance(`${a.name} mentraktir ${a.qty} ${a.unit}. ${a.message}`);
+        u.lang = CFG.ttsLang; u.volume = CFG.vol; u.onend = u.onerror = res;
+        speechSynthesis.speak(u);
+      }, 900);
+    });
+  }
+
+  // ---------- koneksi Trakteer (protokol Pusher) ----------
+  const WS_URL = 'wss://socket.trakteer.id/app/2ae25d102cc6cd41100a?protocol=7&client=js&version=8.4.0&flash=false';
+  let ws, pingTimer, retry = 0;
+  const setStatus = s => { const st = document.querySelector('#demo .st'); if (st) st.textContent = s; log(s); };
+
+  function connect() {
+    setStatus('menghubungkan…');
+    ws = new WebSocket(WS_URL);
+    const send = o => ws.readyState === 1 && ws.send(JSON.stringify(o));
+
+    ws.onmessage = e => {
+      let m; try { m = JSON.parse(e.data); } catch { return; }
+      log('event', m.event, m);
+      switch (m.event) {
+        case 'pusher:connection_established':
+          retry = 0;
+          channels.forEach(ch => send({ event: 'pusher:subscribe', data: { auth: '', channel: ch } }));
+          clearInterval(pingTimer);
+          pingTimer = setInterval(() => send({ event: 'pusher:ping', data: {} }), 25000);
+          setStatus('terhubung');
+          break;
+        case 'pusher:ping': send({ event: 'pusher:pong', data: {} }); break;
+        case 'pusher_internal:subscription_succeeded': setStatus('siap · ' + (m.channel || '').split('.')[0]); break;
+        case 'pusher:subscription_error':
+        case 'pusher:error': setStatus('error: ' + JSON.stringify(m.data)); break;
+        default:
+          if (m.event && m.event.includes('BroadcastNotificationCreated')) {
+            let d = m.data;
+            try { if (typeof d === 'string') d = JSON.parse(d); } catch {}
+            log('payload donasi', d);
+            enqueue(normalize(d));
+          }
+      }
+    };
+    ws.onclose = () => {
+      clearInterval(pingTimer);
+      const wait = Math.min(30000, 1000 * 2 ** retry++);
+      setStatus(`terputus, coba lagi ${wait / 1000} dtk`);
+      setTimeout(connect, wait);
+    };
+    ws.onerror = () => ws.close();
+  }
+
+  // ---------- panel demo ----------
+  const SAMPLES = [
+    { supporter_name: 'pixelmochi', quantity: 1, unit: 'Cendol', price: 5000, supporter_message: 'Halo kak, semangat streamingnya! 🌷' },
+    { supporter_name: 'Raka Senja', quantity: 5, unit: 'Cendol', price: 25000, supporter_message: 'Up up! Main game horor dong next stream' },
+    { supporter_name: 'kopi_susu', quantity: 40, unit: 'Cendol', price: 200000, supporter_message: 'Buat beli kopi seminggu. Jangan begadang terus ya, sehat-sehat! Ditunggu cover lagu barunya 🎶' },
+  ];
+  if (CFG.demo) {
+    const box = el('div'); box.id = 'demo';
+    ['Test kecil', 'Test sedang', 'Test besar'].forEach((t, i) => {
+      const b = el('button', '', t);
+      b.onclick = () => { actx && actx.resume(); enqueue(normalize(SAMPLES[i])); };
+      box.append(b);
+    });
+    box.append(el('span', 'st', channels.length ? '…' : 'mode demo (tanpa id)'));
+    document.body.append(box);
+  }
+
+  if (channels.length) connect();
+  else if (!CFG.demo) {
+    const h = el('div', '', 'Tambahkan ?id=creator-stream.HASH.KEY ke URL overlay');
+    h.id = 'hint'; document.body.append(h);
+  }
+})();
+</script>
+</body>
+</html>
