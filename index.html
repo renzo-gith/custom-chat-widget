@@ -210,7 +210,10 @@ input.input[aria-invalid="true"]{border-color:var(--highlight)}
 .order-preview .lbl{font-weight:700;font-size:14px}
 .msg{margin:0;padding:18px 20px;border-radius:24px 24px 6px 24px;background:var(--white);font:400 14px/22px var(--sans);white-space:pre-wrap;overflow-wrap:anywhere}
 .order-actions{display:flex;flex-wrap:wrap;gap:10px}
-.contact{font-size:13px;line-height:20px;color:var(--mute)}
+.contact{font-size:13px;line-height:20px;color:var(--mute);max-width:340px}
+.contact .dc-user{color:var(--ink);font-weight:700}
+.dc-copy{margin-left:2px;padding:1px 8px;border:1.5px solid var(--ink);border-radius:999px;background:transparent;color:var(--ink);font:700 12px/18px var(--sans);cursor:pointer}
+.dc-copy:hover{background:var(--ink);color:var(--paper)}
 
 footer{border-top:1px solid var(--line)}
 footer .wrap{display:flex;justify-content:space-between;gap:12px 32px;padding-top:28px;padding-bottom:40px;font-weight:500;font-size:13px;color:var(--mute)}
@@ -483,7 +486,8 @@ const CONFIG = {
   brand: "Renzo",
   greeting: "Halo Ren",
   siteBase: "https://renzo-gith.github.io/custom-chat-widget/", // dipakai kalau halaman dibuka di luar GitHub Pages
-  discord: "",   // link Discord (server invite atau profil), contoh "https://discord.gg/xxxx". Kosong = tombol Kirim disembunyikan
+  discordUser: "renaldy_afif",                    // username Discord untuk order lewat DM. Kosong = tombol Kirim disembunyikan
+  discord: "https://discord.com/channels/@me",   // halaman Discord yang dibuka (daftar teman). Bisa diganti link profil https://discord.com/users/USER_ID
   contact: "",   // kontak yang ditampilkan di bawah tombol, contoh "Discord: renzo.widget"
   packages: [
     { id:"recolor", name:"Recolor", tone:"sky", time:"2–3 hari", price:"Rp150.000",
@@ -769,17 +773,21 @@ function orderText(){
 }
 function renderOrder(){
   oPrev.textContent = orderText();
-  oSend.hidden = !CONFIG.discord;
+  oSend.hidden = !(CONFIG.discord && CONFIG.discordUser);
   if (CONFIG.discord) oSend.href = CONFIG.discord;
 }
 document.getElementById("orderForm").addEventListener("input", renderOrder);
 document.getElementById("orderForm").addEventListener("change", renderOrder);
 document.getElementById("orderForm").addEventListener("submit", e => e.preventDefault());
 // Discord tidak bisa diisi otomatis, jadi pesan disalin dulu lalu Discord dibuka
-oSend.addEventListener("click", () => copy(orderText(), "Pesan disalin. Tempel di Discord."));
+oSend.addEventListener("click", () => copy(orderText(), "Pesan disalin. Tambahkan " + CONFIG.discordUser + " sebagai teman, lalu tempel di DM."));
 document.getElementById("o-copy").addEventListener("click", () => copy(orderText(), "Pesan order disalin."));
 const contactEl = document.getElementById("o-contact");
-if (CONFIG.contact) contactEl.textContent = "Atau kirim manual ke " + CONFIG.contact;
+if (CONFIG.discordUser) {
+  contactEl.innerHTML = 'Pesan order otomatis tersalin. Di Discord, klik <b>Add Friend</b> dan ketik <b class="dc-user">' + esc(CONFIG.discordUser) +
+    '</b> <button type="button" class="dc-copy" id="o-copy-user">Salin username</button>, lalu tempel pesannya di DM setelah permintaan diterima.';
+  document.getElementById("o-copy-user").addEventListener("click", () => copy(CONFIG.discordUser, "Username Discord disalin."));
+} else if (CONFIG.contact) contactEl.textContent = "Atau kirim manual ke " + CONFIG.contact;
 else contactEl.hidden = true;
 cardsEl.addEventListener("click", e => {
   const use = e.target.closest("[data-use]"); if (use){ bT.value = use.dataset.use; refreshBuilder(true); }
