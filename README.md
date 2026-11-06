@@ -1,24 +1,27 @@
 # Custom Chat Widget
 
-Website dan chat widget untuk streamer & VTuber, kompatibel dengan [Social Stream Ninja](https://socialstream.ninja/).
+A website and chat widgets for streamers & VTubers, compatible with [Social Stream Ninja](https://socialstream.ninja/).
 
-Situs: https://renzo-gith.github.io/custom-chat-widget/
+Site: https://renzo-gith.github.io/custom-chat-widget/
 
-## Struktur
+The site follows the browser language (Indonesian or English). Force one with `?lang=id` or `?lang=en`.
 
-- `index.html`, `site/assets/` — website (galeri template, pembuat URL OBS, jasa custom).
-- `Core/renzo-chat-core.js` — logika chat bersama untuk semua widget baru.
-- `Core/SSN-Template.html` — titik awal widget baru.
-- Widget lama (karya klien sebelumnya, NekoCat, Pastel Chat) tetap di repo [SocialStreamNinja](https://github.com/renzo-gith/SocialStreamNinja) supaya link OBS klien tidak berubah.
+## Structure
 
-## Membuat widget baru
+- `index.html`, `site/assets/`: the website (template gallery, OBS URL builder, custom design service).
+- `Core/renzo-chat-core.js`: shared chat logic for all new widgets.
+- `Core/SSN-Template.html`: starting point for a new widget.
+- `Alerts/`: donation alert overlays (e.g. Trakteer).
+- Older widgets (past client work, NekoCat, Pastel Chat) stay in the [SocialStreamNinja](https://github.com/renzo-gith/SocialStreamNinja) repo so existing client OBS links keep working.
 
-1. Salin `Core/SSN-Template.html` ke `NamaWidget/SSN-NamaWidget.html`, aset gambar di `NamaWidget/Asset/`.
-2. Ganti CSS sesuai desain. Logika chat tidak perlu disentuh.
-3. Tambahkan ke daftar `TEMPLATES` di `index.html` dengan `path:"NamaWidget/SSN-NamaWidget.html"`.
+## Making a new widget
 
-Link OBS: `https://renzo-gith.github.io/custom-chat-widget/NamaWidget/SSN-NamaWidget.html?session=KODE_SESSION`
+1. Copy `Core/SSN-Template.html` to `WidgetName/SSN-WidgetName.html`, with image assets in `WidgetName/Asset/`.
+2. Change the CSS to match the design. The chat logic doesn't need to be touched.
+3. Add it to the `TEMPLATES` list in `index.html` with `path:"WidgetName/SSN-WidgetName.html"`.
 
-Demo tanpa session (untuk atur posisi di OBS atau kirim ke klien): `...SSN-NamaWidget.html?demo=1`
+OBS link: `https://renzo-gith.github.io/custom-chat-widget/WidgetName/SSN-WidgetName.html?session=SESSION_CODE`
 
-Parameter opsional: `&limit=8` `&autohide=30` `&scale=1` `&owner=NamaStreamer` `&onlytype=youtube,twitch` `&hidetype=tiktok` `&showevents=raid` `&mindono=1`
+Demo without a session (for positioning in OBS or sending to a client): `...SSN-WidgetName.html?demo=1`
+
+Optional parameters: `&limit=8` `&autohide=30` `&scale=1` `&owner=StreamerName` `&onlytype=youtube,twitch` `&hidetype=tiktok` `&showevents=raid` `&mindono=1`
