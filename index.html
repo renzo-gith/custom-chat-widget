@@ -784,9 +784,8 @@ oSend.addEventListener("click", () => copy(orderText(), "Pesan disalin. Terima u
 document.getElementById("o-copy").addEventListener("click", () => copy(orderText(), "Pesan order disalin."));
 const contactEl = document.getElementById("o-contact");
 if (CONFIG.discordUser) {
-  contactEl.innerHTML = 'Pesan order otomatis tersalin. Terima undangan pertemanan di Discord, lalu tempel pesannya di DM. ' +
-    'Kalau link tidak terbuka, klik <b>Add Friend</b> dan ketik <b class="dc-user">' + esc(CONFIG.discordUser) +
-    '</b> <button type="button" class="dc-copy" id="o-copy-user">Salin username</button>';
+  contactEl.innerHTML = 'Discord: <b class="dc-user">' + esc(CONFIG.discordUser) +
+    '</b> <button type="button" class="dc-copy" id="o-copy-user" aria-label="Salin username Discord">Salin</button>';
   document.getElementById("o-copy-user").addEventListener("click", () => copy(CONFIG.discordUser, "Username Discord disalin."));
 } else if (CONFIG.contact) contactEl.textContent = "Atau kirim manual ke " + CONFIG.contact;
 else contactEl.hidden = true;
