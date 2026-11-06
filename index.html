@@ -168,7 +168,7 @@ input.input[aria-invalid="true"]{border-color:var(--highlight)}
 
 /* Packages */
 .packages{padding:8px 28px;border-radius:36px;background:var(--white)}
-.pk-row{display:grid;grid-template-columns:170px minmax(0,1fr) 110px 140px;gap:12px;align-items:start}
+.pk-row{display:grid;grid-template-columns:170px minmax(0,1fr) 110px 150px;gap:12px;align-items:start}
 .pk-head{padding:18px 0 14px;border-bottom:2px solid var(--line);font-weight:600;font-size:13px;color:var(--mute)}
 .pk{position:relative;margin:0 -28px;padding:24px 28px;border-radius:40px;cursor:pointer;transition:transform .2s ease,background-color .2s ease}
 .pk::after{content:"";position:absolute;left:28px;right:28px;bottom:0;border-bottom:1px solid var(--line);transition:opacity .2s ease}
@@ -178,7 +178,13 @@ input.input[aria-invalid="true"]{border-color:var(--highlight)}
 .pk li::before{content:"•";margin-right:.6em}
 .pk-time{font-weight:500;font-size:15px;line-height:25px}
 .pk-time span{display:none}
-.pk-price{font-weight:700;font-size:22px;line-height:28px;white-space:nowrap}
+.pk-price{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
+.pk-price .p1{font-weight:700;font-size:22px;line-height:28px}
+.pk-price .p1 b{font-weight:700;white-space:nowrap}
+.p-pre{display:block;font:600 12px/16px var(--sans);color:var(--mute)}
+.p-unit{font:600 13px/normal var(--sans);color:var(--mute);white-space:nowrap}
+.p2{font:600 13px/18px var(--sans);color:var(--mute);white-space:nowrap}
+.pk:hover .p-pre,.pk:hover .p-unit,.pk:hover .p2,.pk:focus-visible .p2{color:var(--ink);opacity:.7}
 .pk[data-tone="sky"]{--tone:var(--sky)}
 .pk[data-tone="pink"]{--tone:var(--bubblegum)}
 .pk[data-tone="butter"]{--tone:var(--butter)}
@@ -208,6 +214,10 @@ input.input[aria-invalid="true"]{border-color:var(--highlight)}
 .opt:has(input:checked){background:var(--ink);color:var(--paper)}
 .order-preview{flex:0 0 340px;display:flex;flex-direction:column;gap:14px;min-width:0}
 .order-preview .lbl{font-weight:700;font-size:14px}
+.msg-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.lang{display:flex;gap:2px;padding:3px;border:1px solid var(--line);border-radius:999px;background:var(--white)}
+.lang button{padding:5px 12px;border:0;border-radius:999px;background:transparent;color:var(--ink);font:700 12px/normal var(--sans);cursor:pointer}
+.lang button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 .msg{margin:0;padding:18px 20px;border-radius:24px 24px 6px 24px;background:var(--white);font:400 14px/22px var(--sans);white-space:pre-wrap;overflow-wrap:anywhere}
 .order-actions{display:flex;flex-wrap:wrap;gap:10px}
 .contact{font-size:13px;line-height:20px;color:var(--mute);max-width:340px}
@@ -276,7 +286,9 @@ footer a{color:var(--ink)}
   .pk-head{display:none}
   .pk{grid-template-columns:minmax(0,1fr);gap:10px;margin:0 -20px;padding:20px;cursor:default}
   .pk::after{left:20px;right:20px}
-  .pk-price{order:-1;grid-row:2;font-size:26px;line-height:30px}
+  .pk-price{order:-1;grid-row:2;flex-direction:row;flex-wrap:wrap;align-items:baseline;gap:2px 10px}
+  .pk-price .p1{font-size:26px;line-height:30px}
+  .p-pre{display:inline;margin-right:5px}
   .pk-name{grid-row:1}
   .pk-time span{display:inline}
   .port{flex-direction:column;align-items:flex-start;gap:14px;padding:18px 20px}
@@ -293,36 +305,36 @@ footer a{color:var(--ink)}
 
 <header class="nav">
   <div class="wrap">
-    <a class="brand" href="#top" aria-label="Renzo Custom Chat Widget, ke atas">
+    <a class="brand" href="#top" data-i-aria="brandAria" aria-label="Renzo Custom Chat Widget, ke atas">
       <img src="site/assets/logo.svg" width="33" height="32" alt="">
       <b class="disp" id="brandName">Renzo</b>
       <span>Custom Chat Widget</span>
     </a>
-    <nav class="links" aria-label="Utama">
-      <a href="#template">Template</a>
-      <a href="#buat-url">Buat URL</a>
-      <a href="#cara-pasang">Cara pasang</a>
-      <a href="#custom">Jasa custom</a>
-      <a class="btn btn-primary" href="#order">Pesan custom</a>
+    <nav class="links" data-i-aria="navAria" aria-label="Utama">
+      <a href="#template" data-i="navTemplate">Template</a>
+      <a href="#buat-url" data-i="navUrl">Buat URL</a>
+      <a href="#cara-pasang" data-i="navHowto">Cara pasang</a>
+      <a href="#custom" data-i="navCustom">Jasa custom</a>
+      <a class="btn btn-primary" href="#order" data-i="navOrder">Pesan custom</a>
     </nav>
   </div>
 </header>
 
 <main id="top">
-  <section class="hero" aria-label="Pembuka">
+  <section class="hero" data-i-aria="heroAria" aria-label="Pembuka">
     <div class="wrap">
-      <h1 class="stack" aria-label="Chat widget untuk streamer dan VTuber">
-        <span class="line" aria-hidden="true"><span class="role">host</span><span class="bubble disp b-host">Chat widget</span></span>
-        <span class="line" aria-hidden="true"><span class="role">member</span><span class="bubble disp b-member">untuk streamer</span></span>
-        <span class="line" aria-hidden="true"><span class="role">regular</span><span class="bubble disp b-regular">&amp; VTuber</span></span>
+      <h1 class="stack" data-i-aria="heroH1" aria-label="Chat widget untuk streamer dan VTuber">
+        <span class="line" aria-hidden="true"><span class="role">host</span><span class="bubble disp b-host" data-i="hero1">Chat widget</span></span>
+        <span class="line" aria-hidden="true"><span class="role">member</span><span class="bubble disp b-member" data-i="hero2">untuk streamer</span></span>
+        <span class="line" aria-hidden="true"><span class="role">regular</span><span class="bubble disp b-regular" data-i="hero3">&amp; VTuber</span></span>
       </h1>
       <div class="hero-side">
-        <p class="lead">Pilih template gratis, tempel kode session dari Social Stream Ninja, lalu salin satu URL ke OBS. Butuh tampilan yang cuma dimiliki channel kamu? Pesan desain custom.</p>
+        <p class="lead" data-i="lead">Pilih template gratis, tempel kode session dari Social Stream Ninja, lalu salin satu URL ke OBS. Butuh tampilan yang cuma dimiliki channel kamu? Pesan desain custom.</p>
         <div class="ctas">
-          <a class="btn btn-dark" href="#template">Lihat template</a>
-          <a class="btn btn-secondary" href="#custom">Lihat paket custom</a>
+          <a class="btn btn-dark" href="#template" data-i="ctaTemplates">Lihat template</a>
+          <a class="btn btn-secondary" href="#custom" data-i="ctaCustom">Lihat paket custom</a>
         </div>
-        <p class="note">Jalan di YouTube, TikTok, dan Twitch lewat Social Stream Ninja. Tidak perlu install apa pun di OBS.</p>
+        <p class="note" data-i="heroNote">Jalan di YouTube, TikTok, dan Twitch lewat Social Stream Ninja. Tidak perlu install apa pun di OBS.</p>
       </div>
     </div>
   </section>
@@ -330,14 +342,14 @@ footer a{color:var(--ink)}
   <section class="sec" id="template" aria-labelledby="h-template">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="disp" id="h-template">Template</h2>
-        <p>Template gratis bisa langsung dipakai. Karya klien ditampilkan sebagai contoh, dan bisa dipesan dengan gaya serupa.</p>
+        <h2 class="disp" id="h-template" data-i="tplH">Template</h2>
+        <p data-i="tplP">Template gratis bisa langsung dipakai. Karya klien ditampilkan sebagai contoh, dan bisa dipesan dengan gaya serupa.</p>
       </div>
       <div class="sec-body">
-        <div class="filter" role="group" aria-label="Saring template">
-          <button type="button" data-filter="all" aria-pressed="true">Semua <span data-count="all"></span></button>
-          <button type="button" data-filter="free" aria-pressed="false">Gratis <span data-count="free"></span></button>
-          <button type="button" data-filter="client" aria-pressed="false">Karya klien <span data-count="client"></span></button>
+        <div class="filter" role="group" data-i-aria="filterAria" aria-label="Saring template">
+          <button type="button" data-filter="all" aria-pressed="true"><span class="f-l" data-i="fAll">Semua</span> <span data-count="all"></span></button>
+          <button type="button" data-filter="free" aria-pressed="false"><span class="f-l" data-i="fFree">Gratis</span> <span data-count="free"></span></button>
+          <button type="button" data-filter="client" aria-pressed="false"><span class="f-l" data-i="fClient">Karya klien</span> <span data-count="client"></span></button>
         </div>
         <div class="cards collapsed" id="cards"></div>
         <button type="button" class="btn btn-secondary more" id="more">Tampilkan semua</button>
@@ -348,43 +360,48 @@ footer a{color:var(--ink)}
   <section class="sec" id="buat-url" aria-labelledby="h-url">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="disp" id="h-url">Buat URL OBS</h2>
-        <p>Isi kode session dari Social Stream Ninja. URL langsung jadi dan tinggal disalin.</p>
+        <h2 class="disp" id="h-url" data-i="urlH">Buat URL OBS</h2>
+        <p data-i="urlP">Isi kode session dari Social Stream Ninja. URL langsung jadi dan tinggal disalin.</p>
       </div>
       <div class="sec-body">
         <div class="panel">
           <form class="form" id="builder" novalidate>
             <div class="field">
-              <label for="b-template">Template</label>
+              <label for="b-template" data-i="bTemplate">Template</label>
               <select class="input" id="b-template"></select>
               <span class="hint" id="b-template-hint"></span>
             </div>
             <div class="field">
-              <label for="b-session">Kode session</label>
-              <input class="input" type="text" id="b-session" placeholder="contoh: a1b2c3d4e5" autocomplete="off" spellcheck="false">
-              <span class="hint">Ada di menu ekstensi Social Stream Ninja, di akhir link overlay setelah ?session=</span>
+              <label for="b-session" data-i="bSession">Kode session</label>
+              <input class="input" type="text" id="b-session" data-i-ph="bSessionPh" placeholder="contoh: a1b2c3d4e5" autocomplete="off" spellcheck="false">
+              <span class="hint" data-i="bSessionHint">Ada di menu ekstensi Social Stream Ninja, di akhir link overlay setelah ?session=</span>
+            </div>
+            <div class="field">
+              <label for="b-owner" data-i="bOwner">Username</label>
+              <input class="input" type="text" id="b-owner" data-i-ph="bOwnerPh" placeholder="@usernamekamu" autocomplete="off" spellcheck="false">
+              <span class="hint" data-i="bOwnerHint">Nama akun kamu, supaya chat kamu tampil sebagai host. Boleh dikosongkan.</span>
             </div>
             <div class="row">
               <div class="field">
-                <label for="b-limit">Pesan maksimal di layar</label>
+                <label for="b-limit" data-i="bLimit">Pesan maksimal di layar</label>
                 <input class="input" type="number" id="b-limit" min="1" max="30" value="8">
               </div>
               <div class="field">
-                <label for="b-hide">Hilang setelah (detik)</label>
+                <label for="b-hide" data-i="bHide">Hilang setelah (detik)</label>
                 <input class="input" type="number" id="b-hide" min="0" max="600" value="0">
-                <span class="hint">0 berarti pesan tidak hilang sendiri</span>
+                <span class="hint" data-i="bHideHint">0 berarti pesan tidak hilang sendiri</span>
               </div>
             </div>
             <div class="out" aria-live="polite">
               <div class="url" id="b-url"></div>
               <div class="bar">
-                <span>Browser Source OBS: lebar 500, tinggi 800</span>
-                <button type="button" class="btn btn-primary" id="b-copy">Salin URL</button>
+                <span data-i="bObs">Browser Source OBS: lebar 500, tinggi 800</span>
+                <button type="button" class="btn btn-primary" id="b-copy" data-i="bCopy">Salin URL</button>
               </div>
             </div>
             <div class="status" id="b-status" role="status"></div>
           </form>
-          <div class="stage live" id="builderStage"><span class="chip chip-butter">Preview langsung</span></div>
+          <div class="stage live" id="builderStage"><span class="chip chip-butter" data-i="livePreview">Preview langsung</span></div>
         </div>
       </div>
     </div>
@@ -393,15 +410,15 @@ footer a{color:var(--ink)}
   <section class="sec" id="cara-pasang" aria-labelledby="h-howto">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="disp" id="h-howto">Cara pasang</h2>
-        <p>Sekali pasang. Setelah itu chat muncul otomatis setiap kali kamu live.</p>
+        <h2 class="disp" id="h-howto" data-i="howH">Cara pasang</h2>
+        <p data-i="howP">Sekali pasang. Setelah itu chat muncul otomatis setiap kali kamu live.</p>
       </div>
       <div class="sec-body">
         <ol class="steps">
-          <li><h3 class="disp">Pasang Social Stream Ninja</h3><p>Install ekstensinya di Chrome, aktifkan, lalu buka pop-out chat YouTube atau TikTok Live.</p></li>
-          <li><h3 class="disp">Ambil kode session</h3><p>Buka menu ekstensi. Salin teks setelah ?session= pada link overlay.</p></li>
-          <li><h3 class="disp">Buat URL di atas</h3><p>Pilih template, tempel kode session, lalu tekan Salin URL.</p></li>
-          <li><h3 class="disp">Tambahkan ke OBS</h3><p>Sources, tambah, Browser. Tempel URL, atur lebar 500 dan tinggi 800, lalu OK.</p></li>
+          <li><h3 class="disp" data-i="s1h">Pasang Social Stream Ninja</h3><p data-i="s1p">Install ekstensinya di Chrome, aktifkan, lalu buka pop-out chat YouTube atau TikTok Live.</p></li>
+          <li><h3 class="disp" data-i="s2h">Ambil kode session</h3><p data-i="s2p">Buka menu ekstensi. Salin teks setelah ?session= pada link overlay.</p></li>
+          <li><h3 class="disp" data-i="s3h">Buat URL di atas</h3><p data-i="s3p">Pilih template, tempel kode session, lalu tekan Salin URL.</p></li>
+          <li><h3 class="disp" data-i="s4h">Tambahkan ke OBS</h3><p data-i="s4p">Sources, tambah, Browser. Tempel URL, atur lebar 500 dan tinggi 800, lalu OK.</p></li>
         </ol>
       </div>
     </div>
@@ -410,32 +427,32 @@ footer a{color:var(--ink)}
   <section class="sec" id="custom" aria-labelledby="h-custom">
     <div class="wrap">
       <div class="sec-head">
-        <h2 class="disp" id="h-custom">Jasa custom</h2>
-        <p>Desain dibuat dari nol sesuai karakter, warna, dan lore channel kamu. Ornamen digambar sendiri, bukan aset stok.</p>
+        <h2 class="disp" id="h-custom" data-i="cusH">Jasa custom</h2>
+        <p data-i="cusP">Desain dibuat dari nol sesuai karakter, warna, dan lore channel kamu. Ornamen digambar sendiri, bukan aset stok.</p>
       </div>
       <div class="sec-body">
-        <div class="packages" role="table" aria-label="Paket jasa custom">
+        <div class="packages" role="table" data-i-aria="pkAria" aria-label="Paket jasa custom">
           <div class="pk-row pk-head" role="row">
-            <span role="columnheader">Paket</span><span role="columnheader">Isi</span><span role="columnheader">Pengerjaan</span><span role="columnheader">Harga</span>
+            <span role="columnheader" data-i="pkPackage">Paket</span><span role="columnheader" data-i="pkIncludes">Isi</span><span role="columnheader" data-i="pkTime">Pengerjaan</span><span role="columnheader" data-i="pkPrice">Harga</span>
           </div>
           <div id="pkBody"></div>
         </div>
 
         <div class="port">
-          <p>Semua karya klien di bagian Template adalah hasil pesanan custom. Lihat untuk referensi gaya, lalu sebutkan namanya saat order.</p>
-          <a class="btn btn-secondary" href="#template" data-goto-filter="client">Lihat karya klien</a>
+          <p data-i="portP">Semua karya klien di bagian Template adalah hasil pesanan custom. Lihat untuk referensi gaya, lalu sebutkan namanya saat order.</p>
+          <a class="btn btn-secondary" href="#template" data-goto-filter="client" data-i="portBtn">Lihat karya klien</a>
         </div>
 
         <div class="order" id="order">
           <form class="order-form" id="orderForm" novalidate>
-            <h3 class="disp">Order</h3>
+            <h3 class="disp" data-i="orderH">Order</h3>
             <div class="row">
               <div class="field">
-                <label for="o-name">Nama channel</label>
-                <input class="input" type="text" id="o-name" autocomplete="nickname" placeholder="contoh: Kumayama Ryuu">
+                <label for="o-name" data-i="oName">Nama channel</label>
+                <input class="input" type="text" id="o-name" autocomplete="nickname" data-i-ph="oNamePh" placeholder="contoh: Kumayama Ryuu">
               </div>
               <div class="field">
-                <label for="o-date">Dipakai mulai</label>
+                <label for="o-date" data-i="oDate">Dipakai mulai</label>
                 <input class="input" type="date" id="o-date">
               </div>
             </div>
@@ -448,20 +465,26 @@ footer a{color:var(--ink)}
               </div>
             </div>
             <div class="field">
-              <label for="o-pkg">Paket</label>
+              <label for="o-pkg" data-i="oPkg">Paket</label>
               <select class="input" id="o-pkg"></select>
             </div>
             <div class="field">
-              <label for="o-brief">Tema dan referensi</label>
-              <textarea class="input" id="o-brief" placeholder="Warna utama, karakter atau maskot, mood (imut, gelap, retro), link model VTuber atau channel."></textarea>
+              <label for="o-brief" data-i="oBrief">Tema dan referensi</label>
+              <textarea class="input" id="o-brief" data-i-ph="oBriefPh" placeholder="Warna utama, karakter atau maskot, mood (imut, gelap, retro), link model VTuber atau channel."></textarea>
             </div>
           </form>
           <div class="order-preview">
-            <span class="lbl">Pesan yang akan dikirim</span>
+            <div class="msg-head">
+              <span class="lbl" data-i="oMsg">Pesan yang akan dikirim</span>
+              <div class="lang" role="group" data-i-aria="msgLangAria" aria-label="Bahasa pesan">
+                <button type="button" data-msg-lang="id" aria-pressed="true">ID</button>
+                <button type="button" data-msg-lang="en" aria-pressed="false">EN</button>
+              </div>
+            </div>
             <pre class="msg" id="o-preview"></pre>
             <div class="order-actions">
-              <a class="btn btn-primary" id="o-send" href="#" target="_blank" rel="noopener">Kirim lewat Discord</a>
-              <button type="button" class="btn btn-secondary" id="o-copy">Salin pesan</button>
+              <a class="btn btn-primary" id="o-send" href="#" target="_blank" rel="noopener" data-i="oSend">Kirim lewat Discord</a>
+              <button type="button" class="btn btn-secondary" id="o-copy" data-i="oCopy">Salin pesan</button>
             </div>
             <p class="contact" id="o-contact"></p>
           </div>
@@ -474,7 +497,7 @@ footer a{color:var(--ink)}
 <footer>
   <div class="wrap">
     <span>© <span id="yr">2026</span> <span data-brand>Renzo</span>. Custom Chat Widget.</span>
-    <span>Kompatibel dengan <a href="https://socialstream.ninja/" target="_blank" rel="noopener">Social Stream Ninja</a>. Proyek independen, tidak berafiliasi.</span>
+    <span><span data-i="footA">Kompatibel dengan</span> <a href="https://socialstream.ninja/" target="_blank" rel="noopener">Social Stream Ninja</a>. <span data-i="footB">Proyek independen, tidak berafiliasi.</span></span>
   </div>
 </footer>
 
@@ -484,20 +507,139 @@ footer a{color:var(--ink)}
 /* ==== PENGATURAN — ubah di sini ==== */
 const CONFIG = {
   brand: "Renzo",
-  greeting: "Halo Ren",
+  greeting: { id:"Halo Ren", en:"Hi Ren" },
   siteBase: "https://renzo-gith.github.io/custom-chat-widget/", // dipakai kalau halaman dibuka di luar GitHub Pages
   discordUser: "renaldy_afif",                    // username Discord untuk order lewat DM. Kosong = tombol Kirim disembunyikan
   discord: "https://discord.gg/TaWeYUFw",        // link undangan pertemanan dari menu Add Friend (cek masa berlakunya)
   contact: "",   // kontak yang ditampilkan di bawah tombol, contoh "Discord: renzo.widget"
+  // Harga: usd & idr. from:true = "mulai", unit:true = "/ item"
   packages: [
-    { id:"recolor", name:"Recolor", tone:"sky", time:"2–3 hari", price:"Rp150.000",
-      items:["Pakai salah satu desain yang ada","Warna, font, dan nama host disesuaikan","1× revisi"] },
-    { id:"custom", name:"Custom", tone:"pink", time:"5–7 hari", price:"Rp350.000",
-      items:["Desain baru dari nol","Tampilan beda untuk host, moderator, member, regular","Ornamen SVG digambar sendiri","2× revisi"] },
-    { id:"custom-alert", name:"Custom + Alert", tone:"butter", time:"7–10 hari", price:"Rp550.000",
-      items:["Semua isi paket Custom","Pop-up alert donasi Trakteer atau Saweria","Animasi masuk dan keluar","3× revisi"] }
+    { id:"recolor", name:"Recolor", tone:"sky", usd:25, idr:100000,
+      time:{ id:"2–3 hari", en:"2–3 days" },
+      items:{ id:["Pakai salah satu desain yang ada","Warna, font, dan nama host disesuaikan","1× revisi"],
+              en:["Pick any existing design","Colors, font and host name changed for you","1 revision"] } },
+    { id:"custom", name:"Custom", tone:"pink", usd:60, idr:350000, from:true,
+      time:{ id:"5–7 hari", en:"5–7 days" },
+      items:{ id:["Desain baru dari nol","Tampilan beda untuk host, moderator, member, regular","Ornamen SVG digambar sendiri","YouTube, TikTok, dan Twitch","2× revisi"],
+              en:["Brand-new design from scratch","Separate looks for host, moderator, member, regular","Hand-drawn SVG ornaments","YouTube, TikTok and Twitch","2 revisions"] } },
+    { id:"addon", name:"Add-on", tone:"butter", usd:15, idr:50000, unit:true,
+      time:{ id:"+1–2 hari", en:"+1–2 days" },
+      items:{ id:["Alert donasi atau Super Chat","Alert member baru","Ornamen animasi tambahan","Alert Trakteer"],
+              en:["Donation or Super Chat alert","New member alert","Extra animated ornament","Trakteer alert"] } }
   ]
 };
+
+/* ==== TEKS — bahasa ikut browser (navigator.language). id* = Indonesia, selain itu Inggris.
+   Bisa dipaksa lewat ?lang=id atau ?lang=en ==== */
+const T = {
+  id: {
+    title:"Renzo Chat Widget — template gratis & jasa custom",
+    desc:"Template chat widget gratis dan jasa desain custom untuk streamer dan VTuber. Kompatibel dengan Social Stream Ninja.",
+    brandAria:"Renzo Custom Chat Widget, ke atas", navAria:"Utama",
+    navTemplate:"Template", navUrl:"Buat URL", navHowto:"Cara pasang", navCustom:"Jasa custom", navOrder:"Pesan custom",
+    heroAria:"Pembuka", heroH1:"Chat widget untuk streamer dan VTuber",
+    hero1:"Chat widget", hero2:"untuk streamer", hero3:"& VTuber",
+    lead:"Pilih template gratis, tempel kode session dari Social Stream Ninja, lalu salin satu URL ke OBS. Butuh tampilan yang cuma dimiliki channel kamu? Pesan desain custom.",
+    ctaTemplates:"Lihat template", ctaCustom:"Lihat paket custom",
+    heroNote:"Jalan di YouTube, TikTok, dan Twitch lewat Social Stream Ninja. Tidak perlu install apa pun di OBS.",
+    tplH:"Template", tplP:"Template gratis bisa langsung dipakai. Karya klien ditampilkan sebagai contoh, dan bisa dipesan dengan gaya serupa.",
+    filterAria:"Saring template", fAll:"Semua", fFree:"Gratis", fClient:"Karya klien",
+    chipFree:"Gratis", chipClient:"Karya klien", useTpl:"Pakai template", useRef:"Pakai referensi", showAll:"Tampilkan semua",
+    urlH:"Buat URL OBS", urlP:"Isi kode session dari Social Stream Ninja. URL langsung jadi dan tinggal disalin.",
+    bTemplate:"Template", supports:"Mendukung ",
+    bSession:"Kode session", bSessionPh:"contoh: a1b2c3d4e5",
+    bSessionHint:"Ada di menu ekstensi Social Stream Ninja, di akhir link overlay setelah ?session=",
+    bOwner:"Username", bOwnerPh:"@usernamekamu", bOwnerHint:"Nama akun kamu, supaya chat kamu tampil sebagai host. Boleh dikosongkan.",
+    bLimit:"Pesan maksimal di layar", bHide:"Hilang setelah (detik)", bHideHint:"0 berarti pesan tidak hilang sendiri",
+    bObs:"Browser Source OBS: lebar 500, tinggi 800", bCopy:"Salin URL", livePreview:"Preview langsung",
+    sessionPh:"KODE-SESSION",
+    needSession:"Isi kode session dulu supaya widget terhubung ke chat kamu.",
+    urlCopied:"URL disalin. Tempel di Browser Source OBS.",
+    previewFail:"Preview tampil saat halaman dibuka dari GitHub Pages.",
+    howH:"Cara pasang", howP:"Sekali pasang. Setelah itu chat muncul otomatis setiap kali kamu live.",
+    s1h:"Pasang Social Stream Ninja", s1p:"Install ekstensinya di Chrome, aktifkan, lalu buka pop-out chat YouTube atau TikTok Live.",
+    s2h:"Ambil kode session", s2p:"Buka menu ekstensi. Salin teks setelah ?session= pada link overlay.",
+    s3h:"Buat URL di atas", s3p:"Pilih template, tempel kode session, lalu tekan Salin URL.",
+    s4h:"Tambahkan ke OBS", s4p:"Sources, tambah, Browser. Tempel URL, atur lebar 500 dan tinggi 800, lalu OK.",
+    cusH:"Jasa custom", cusP:"Desain dibuat dari nol sesuai karakter, warna, dan lore channel kamu. Ornamen digambar sendiri, bukan aset stok.",
+    pkAria:"Paket jasa custom", pkPackage:"Paket", pkIncludes:"Isi", pkTime:"Pengerjaan", pkPrice:"Harga",
+    pkPick:"Pilih paket ", from:"mulai", perItem:"/ item", perItemWord:"per item",
+    portP:"Semua karya klien di bagian Template adalah hasil pesanan custom. Lihat untuk referensi gaya, lalu sebutkan namanya saat order.",
+    portBtn:"Lihat karya klien",
+    orderH:"Order", oName:"Nama channel", oNamePh:"contoh: Kumayama Ryuu", oDate:"Dipakai mulai", oPkg:"Paket",
+    oBrief:"Tema dan referensi", oBriefPh:"Warna utama, karakter atau maskot, mood (imut, gelap, retro), link model VTuber atau channel.",
+    oMsg:"Pesan yang akan dikirim", msgLangAria:"Bahasa pesan", oSend:"Kirim lewat Discord", oCopy:"Salin pesan",
+    sent:"Pesan disalin. Terima undangan pertemanan, lalu tempel di DM.", copied:"Pesan order disalin.",
+    copyUser:"Salin", copyUserAria:"Salin username Discord", userCopied:"Username Discord disalin.", orManual:"Atau kirim manual ke ",
+    similar:"Mirip desain ", copyFail:"Gagal menyalin. Pilih teksnya lalu salin manual.",
+    footA:"Kompatibel dengan", footB:"Proyek independen, tidak berafiliasi.",
+    // isi pesan order
+    mIntro:"saya mau order chat widget.", mChannel:"Channel", mPlatform:"Platform", mPackage:"Paket", mDate:"Dipakai mulai", mBrief:"Tema dan referensi"
+  },
+  en: {
+    title:"Renzo Chat Widget — free templates & custom designs",
+    desc:"Free chat widget templates and custom chat widget designs for streamers and VTubers. Works with Social Stream Ninja.",
+    brandAria:"Renzo Custom Chat Widget, back to top", navAria:"Main",
+    navTemplate:"Templates", navUrl:"Get URL", navHowto:"How to install", navCustom:"Custom work", navOrder:"Order custom",
+    heroAria:"Intro", heroH1:"Chat widgets for streamers and VTubers",
+    hero1:"Chat widgets", hero2:"for streamers", hero3:"& VTubers",
+    lead:"Pick a free template, paste your Social Stream Ninja session code, then copy one URL into OBS. Want a look only your channel has? Order a custom design.",
+    ctaTemplates:"Browse templates", ctaCustom:"See custom packages",
+    heroNote:"Works on YouTube, TikTok and Twitch through Social Stream Ninja. Nothing to install in OBS.",
+    tplH:"Templates", tplP:"Free templates are ready to use. Client work is shown as examples, and you can order one in a similar style.",
+    filterAria:"Filter templates", fAll:"All", fFree:"Free", fClient:"Client work",
+    chipFree:"Free", chipClient:"Client work", useTpl:"Use template", useRef:"Use as reference", showAll:"Show all",
+    urlH:"Get your OBS URL", urlP:"Enter your Social Stream Ninja session code. The URL is built right away, ready to copy.",
+    bTemplate:"Template", supports:"Supports ",
+    bSession:"Session code", bSessionPh:"e.g. a1b2c3d4e5",
+    bSessionHint:"Find it in the Social Stream Ninja extension menu, at the end of the overlay link after ?session=",
+    bOwner:"Username", bOwnerPh:"@yourusername", bOwnerHint:"Your channel name, so your own messages get the host look. Optional.",
+    bLimit:"Max messages on screen", bHide:"Hide after (seconds)", bHideHint:"0 keeps messages on screen",
+    bObs:"OBS Browser Source: width 500, height 800", bCopy:"Copy URL", livePreview:"Live preview",
+    sessionPh:"SESSION-CODE",
+    needSession:"Enter your session code first so the widget connects to your chat.",
+    urlCopied:"URL copied. Paste it into an OBS Browser Source.",
+    previewFail:"Preview shows when the page is opened from GitHub Pages.",
+    howH:"How to install", howP:"Set it up once. After that, chat shows up on its own every time you go live.",
+    s1h:"Install Social Stream Ninja", s1p:"Add the extension to Chrome, turn it on, then open the pop-out chat for YouTube or TikTok Live.",
+    s2h:"Get your session code", s2p:"Open the extension menu. Copy the text after ?session= in the overlay link.",
+    s3h:"Build the URL above", s3p:"Pick a template, paste the session code, then press Copy URL.",
+    s4h:"Add it to OBS", s4p:"Sources, add, Browser. Paste the URL, set width 500 and height 800, then OK.",
+    cusH:"Custom work", cusP:"Designed from scratch around your character, colors and channel lore. Ornaments are hand-drawn, not stock assets.",
+    pkAria:"Custom packages", pkPackage:"Package", pkIncludes:"Includes", pkTime:"Turnaround", pkPrice:"Price",
+    pkPick:"Choose package ", from:"from", perItem:"/ item", perItemWord:"per item",
+    portP:"Every client piece under Templates was a custom order. Use them as style references and mention the name when you order.",
+    portBtn:"See client work",
+    orderH:"Order", oName:"Channel name", oNamePh:"e.g. Kumayama Ryuu", oDate:"Needed by", oPkg:"Package",
+    oBrief:"Theme and references", oBriefPh:"Main colors, character or mascot, mood (cute, dark, retro), links to your VTuber model or channel.",
+    oMsg:"Message to send", msgLangAria:"Message language", oSend:"Send via Discord", oCopy:"Copy message",
+    sent:"Message copied. Accept the friend invite, then paste it in a DM.", copied:"Order message copied.",
+    copyUser:"Copy", copyUserAria:"Copy Discord username", userCopied:"Discord username copied.", orManual:"Or send it manually to ",
+    similar:"Similar to the design ", copyFail:"Couldn't copy. Select the text and copy it manually.",
+    footA:"Works with", footB:"Independent project, not affiliated.",
+    mIntro:"I'd like to order a chat widget.", mChannel:"Channel", mPlatform:"Platform", mPackage:"Package", mDate:"Needed by", mBrief:"Theme and references"
+  }
+};
+const qLang = new URLSearchParams(location.search).get("lang");
+const LANG = T[qLang] ? qLang : (String(navigator.language || (navigator.languages || [])[0] || "").toLowerCase().startsWith("id") ? "id" : "en");
+const L = T[LANG];
+let msgLang = LANG;   // bahasa pesan order, bisa diganti lewat tombol ID | EN
+
+function applyLang(){
+  document.documentElement.lang = LANG;
+  document.title = L.title;
+  const md = document.querySelector('meta[name="description"]'); if (md) md.content = L.desc;
+  document.querySelectorAll("[data-i]").forEach(n => { if (L[n.dataset.i] != null) n.textContent = L[n.dataset.i]; });
+  document.querySelectorAll("[data-i-ph]").forEach(n => { if (L[n.dataset.iPh] != null) n.placeholder = L[n.dataset.iPh]; });
+  document.querySelectorAll("[data-i-aria]").forEach(n => { if (L[n.dataset.iAria] != null) n.setAttribute("aria-label", L[n.dataset.iAria]); });
+}
+applyLang();
+
+/* Harga dua mata uang: yang utama ikut bahasa (id = Rupiah, en = Dolar) */
+const fmtCur = (p, cur) => cur === "idr" ? "Rp" + p.idr.toLocaleString("id-ID") : "$" + p.usd;
+const mainCur = lang => lang === "id" ? "idr" : "usd";
+const otherCur = lang => lang === "id" ? "usd" : "idr";
+const priceText = (p, lang) => (p.from ? T[lang].from + " " : "") + fmtCur(p, mainCur(lang)) + (p.unit ? " " + T[lang].perItem : "");
 
 /* ==== DAFTAR DESAIN — free:true = muncul sebagai template gratis ====
    Widget lama ada di repo SocialStreamNinja (LEGACY). Widget baru dibuat di repo ini,
@@ -530,6 +672,10 @@ const TEMPLATES = [
 
 /* ==== Chat demo untuk preview ==== */
 const PLAT_LABEL = { youtube:"YouTube", tiktok:"TikTok", twitch:"Twitch" };
+const DEMO_TEXT = {
+  id:["Halo kak, baru nemu channel ini 👋","Member 6 bulan hadir! Gas terus kak","Jangan spam ya teman-teman, santai aja","Makasih udah mampir semua 💖","Bos ini map yang kemarin bukan?","Akhirnya live lagi, kangen","wkwk kocak banget barusan","Oke kita lanjut satu ronde lagi ya"],
+  en:["Hi! Just found this channel 👋","6 months as a member! Keep it up","No spamming please, keep it chill","Thanks for stopping by, everyone 💖","Is this the same map as yesterday?","Finally live again, missed this","lol that was hilarious","Okay, one more round"]
+};
 const DEMO = [
   { role:"regular",   name:"pixelmochi", text:"Halo kak, baru nemu channel ini 👋" },
   { role:"member",    name:"Raka Senja", text:"Member 6 bulan hadir! Gas terus kak" },
@@ -540,6 +686,7 @@ const DEMO = [
   { role:"regular",   name:"Bima_08",    text:"wkwk kocak banget barusan" },
   { role:"owner",     name:"Host",       text:"Oke kita lanjut satu ronde lagi ya" }
 ];
+DEMO.forEach((d, i) => d.text = DEMO_TEXT[LANG][i]);
 const RENDER_W = 440;
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -633,7 +780,7 @@ class Preview {
   }
   fail(){
     const n = document.createElement("p"); n.className = "note-in";
-    n.textContent = "Preview tampil saat halaman dibuka dari GitHub Pages.";
+    n.textContent = L.previewFail;
     this.stage.appendChild(n);
   }
   push(){
@@ -678,18 +825,18 @@ function renderCards(filter){
         <div class="stage"></div>
         <div class="card-info">
           <div class="card-meta"><h3 class="disp">${esc(t.name)}</h3>
-            <span class="chip ${t.free ? "chip-mint" : "chip-lilac"}">${t.free ? "Gratis" : "Karya klien"}</span></div>
+            <span class="chip ${t.free ? "chip-mint" : "chip-lilac"}">${t.free ? L.chipFree : L.chipClient}</span></div>
           <p class="plat">${platList(t)}</p>
         </div>
       </div>
       ${t.free
-        ? `<a class="btn btn-dark" href="#buat-url" data-use="${t.id}">Pakai template</a>`
-        : `<a class="btn btn-secondary" href="#order" data-like="${t.id}">Pakai referensi</a>`}
+        ? `<a class="btn btn-dark" href="#buat-url" data-use="${t.id}">${L.useTpl}</a>`
+        : `<a class="btn btn-secondary" href="#order" data-like="${t.id}">${L.useRef}</a>`}
     </article>`).join("");
   cardsEl.querySelectorAll(".card").forEach(c => mount(c.querySelector(".stage"), byId(c.dataset.id), { limit:4 }, { hoverOnly: hoverDesktop.matches }));
   cardsEl.classList.add("collapsed");
   moreBtn.hidden = list.length <= 3;
-  moreBtn.textContent = "Tampilkan semua (" + list.length + ")";
+  moreBtn.textContent = L.showAll + " (" + list.length + ")";
 }
 function setFilter(f){
   document.querySelectorAll("[data-filter]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.filter === f)));
@@ -705,18 +852,21 @@ document.querySelectorAll("[data-count]").forEach(s => s.textContent = counts[s.
 const bT = document.getElementById("b-template"), bS = document.getElementById("b-session"),
       bL = document.getElementById("b-limit"), bH = document.getElementById("b-hide"),
       bU = document.getElementById("b-url"), bSt = document.getElementById("b-status"),
-      bHint = document.getElementById("b-template-hint"), bStage = document.getElementById("builderStage");
+      bHint = document.getElementById("b-template-hint"), bStage = document.getElementById("builderStage"),
+      bO = document.getElementById("b-owner");
 bT.innerHTML = TEMPLATES.filter(t => t.free).map(t => `<option value="${t.id}">${esc(t.name)}</option>`).join("");
 const clampNum = (v, lo, hi, d) => { const n = parseInt(v, 10); return Number.isFinite(n) ? Math.min(hi, Math.max(lo, n)) : d; };
 const cleanSession = s => s.trim().replace(/^.*[?&]session=/, "").replace(/[&#].*$/, "");
+const cleanOwner = s => s.trim().replace(/^@+/, "");
 let reloadT;
 function buildURL(){
-  const t = byId(bT.value), session = cleanSession(bS.value);
+  const t = byId(bT.value), session = cleanSession(bS.value), owner = cleanOwner(bO.value);
   const limit = clampNum(bL.value, 1, 30, 8), hide = clampNum(bH.value, 0, 600, 0);
-  bHint.textContent = "Mendukung " + platList(t);
+  bHint.textContent = L.supports + platList(t);
   const base = new URL(encPath(t.path), SITE).href;
-  const extra = (limit !== 8 ? "&limit=" + limit : "") + (hide > 0 ? "&autohide=" + hide : "");
-  bU.innerHTML = esc(base.replace(/^https?:\/\//, "")) + "?session=<b>" + (session ? esc(session) : "KODE-SESSION") + "</b>" + esc(extra);
+  const extra = (limit !== 8 ? "&limit=" + limit : "") + (hide > 0 ? "&autohide=" + hide : "") +
+                (owner ? "&owner=" + encodeURIComponent(owner) : "");
+  bU.innerHTML = esc(base.replace(/^https?:\/\//, "")) + "?session=<b>" + (session ? esc(session) : L.sessionPh) + "</b>" + esc(extra);
   bS.removeAttribute("aria-invalid");
   return { t, session, url: base + "?session=" + encodeURIComponent(session) + extra, limit, hide };
 }
@@ -730,11 +880,12 @@ bT.addEventListener("change", () => refreshBuilder(true));
 bL.addEventListener("input", () => refreshBuilder(true));
 bH.addEventListener("input", () => refreshBuilder(true));
 bS.addEventListener("input", () => { bSt.textContent = ""; refreshBuilder(false); });
+bO.addEventListener("input", () => refreshBuilder(false));
 document.getElementById("builder").addEventListener("submit", e => e.preventDefault());
 document.getElementById("b-copy").addEventListener("click", () => {
   const r = buildURL();
-  if (!r.session){ bS.setAttribute("aria-invalid","true"); bSt.textContent = "Isi kode session dulu supaya widget terhubung ke chat kamu."; bS.focus(); return; }
-  copy(r.url, "URL disalin. Tempel di Browser Source OBS.");
+  if (!r.session){ bS.setAttribute("aria-invalid","true"); bSt.textContent = L.needSession; bS.focus(); return; }
+  copy(r.url, L.urlCopied);
 });
 refreshBuilder(true);
 
@@ -742,32 +893,39 @@ refreshBuilder(true);
 const oName = document.getElementById("o-name"), oDate = document.getElementById("o-date"),
       oPkg = document.getElementById("o-pkg"), oBrief = document.getElementById("o-brief"),
       oPrev = document.getElementById("o-preview"), oSend = document.getElementById("o-send");
+const priceCell = p => {
+  const pre = p.from ? `<small class="p-pre">${esc(L.from)}</small>` : "";
+  const unit = p.unit ? ` <small class="p-unit">${esc(L.perItem)}</small>` : "";
+  return `<span class="p1">${pre}<b class="disp">${esc(fmtCur(p, mainCur(LANG)))}</b>${unit}</span>` +
+         `<span class="p2">${esc(fmtCur(p, otherCur(LANG)))}${p.unit ? " " + esc(L.perItem) : ""}</span>`;
+};
 document.getElementById("pkBody").innerHTML = CONFIG.packages.map(p => `
-  <div class="pk-row pk" role="row" data-tone="${p.tone}" data-pkg="${p.id}" tabindex="0" aria-label="Pilih paket ${esc(p.name)}">
+  <div class="pk-row pk" role="row" data-tone="${p.tone}" data-pkg="${p.id}" tabindex="0" aria-label="${esc(L.pkPick + p.name)}">
     <span class="pk-name disp" role="cell">${esc(p.name)}</span>
-    <ul role="cell">${p.items.map(i => `<li>${esc(i)}</li>`).join("")}</ul>
-    <span class="pk-time" role="cell"><span>Pengerjaan </span>${esc(p.time)}</span>
-    <span class="pk-price disp" role="cell">${esc(p.price)}</span>
+    <ul role="cell">${p.items[LANG].map(i => `<li>${esc(i)}</li>`).join("")}</ul>
+    <span class="pk-time" role="cell"><span>${esc(L.pkTime)} </span>${esc(p.time[LANG])}</span>
+    <span class="pk-price" role="cell">${priceCell(p)}</span>
   </div>`).join("");
-oPkg.innerHTML = CONFIG.packages.map(p => `<option value="${p.id}">${esc(p.name)} (${esc(p.price)})</option>`).join("");
+oPkg.innerHTML = CONFIG.packages.map(p => `<option value="${p.id}">${esc(p.name)} (${esc((p.from ? L.from + " " : "") + fmtCur(p, mainCur(LANG)) + " / " + fmtCur(p, otherCur(LANG)) + (p.unit ? " " + L.perItemWord : ""))})</option>`).join("");
 oPkg.value = "custom";
 function pickPackage(id){ oPkg.value = id; renderOrder(); document.getElementById("order").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" }); }
 document.getElementById("pkBody").addEventListener("click", e => { const r = e.target.closest("[data-pkg]"); if (r) pickPackage(r.dataset.pkg); });
 document.getElementById("pkBody").addEventListener("keydown", e => { const r = e.target.closest("[data-pkg]"); if (r && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); pickPackage(r.dataset.pkg); } });
 
 function orderText(){
+  const M = T[msgLang];
   const plats = [...document.querySelectorAll('input[name="plat"]:checked')].map(i => i.value);
   const pkg = CONFIG.packages.find(p => p.id === oPkg.value);
-  const date = oDate.value ? new Date(oDate.value + "T00:00").toLocaleDateString("id-ID", { day:"numeric", month:"long", year:"numeric" }) : "-";
+  const date = oDate.value ? new Date(oDate.value + "T00:00").toLocaleDateString(msgLang === "id" ? "id-ID" : "en-US", { day:"numeric", month:"long", year:"numeric" }) : "-";
   return [
-    CONFIG.greeting + ", saya mau order chat widget.",
+    CONFIG.greeting[msgLang] + ", " + M.mIntro,
     "",
-    "Channel: " + (oName.value.trim() || "-"),
-    "Platform: " + (plats.join(", ") || "-"),
-    "Paket: " + pkg.name + " (" + pkg.price + ")",
-    "Dipakai mulai: " + date,
+    M.mChannel + ": " + (oName.value.trim() || "-"),
+    M.mPlatform + ": " + (plats.join(", ") || "-"),
+    M.mPackage + ": " + pkg.name + " (" + priceText(pkg, msgLang) + ")",
+    M.mDate + ": " + date,
     "",
-    "Tema dan referensi:",
+    M.mBrief + ":",
     oBrief.value.trim() || "-"
   ].join("\n");
 }
@@ -779,19 +937,24 @@ function renderOrder(){
 document.getElementById("orderForm").addEventListener("input", renderOrder);
 document.getElementById("orderForm").addEventListener("change", renderOrder);
 document.getElementById("orderForm").addEventListener("submit", e => e.preventDefault());
+// Tombol ID | EN: hanya mengganti bahasa pesan order, defaultnya ikut bahasa halaman
+const langBtns = document.querySelectorAll("[data-msg-lang]");
+function setMsgLang(l){ msgLang = l; langBtns.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.msgLang === l))); renderOrder(); }
+langBtns.forEach(b => b.addEventListener("click", () => setMsgLang(b.dataset.msgLang)));
+langBtns.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.msgLang === msgLang)));
 // Discord tidak bisa diisi otomatis, jadi pesan disalin dulu lalu Discord dibuka
-oSend.addEventListener("click", () => copy(orderText(), "Pesan disalin. Terima undangan pertemanan, lalu tempel di DM."));
-document.getElementById("o-copy").addEventListener("click", () => copy(orderText(), "Pesan order disalin."));
+oSend.addEventListener("click", () => copy(orderText(), L.sent));
+document.getElementById("o-copy").addEventListener("click", () => copy(orderText(), L.copied));
 const contactEl = document.getElementById("o-contact");
 if (CONFIG.discordUser) {
   contactEl.innerHTML = 'Discord: <b class="dc-user">' + esc(CONFIG.discordUser) +
-    '</b> <button type="button" class="dc-copy" id="o-copy-user" aria-label="Salin username Discord">Salin</button>';
-  document.getElementById("o-copy-user").addEventListener("click", () => copy(CONFIG.discordUser, "Username Discord disalin."));
-} else if (CONFIG.contact) contactEl.textContent = "Atau kirim manual ke " + CONFIG.contact;
+    '</b> <button type="button" class="dc-copy" id="o-copy-user" aria-label="' + esc(L.copyUserAria) + '">' + esc(L.copyUser) + '</button>';
+  document.getElementById("o-copy-user").addEventListener("click", () => copy(CONFIG.discordUser, L.userCopied));
+} else if (CONFIG.contact) contactEl.textContent = L.orManual + CONFIG.contact;
 else contactEl.hidden = true;
 cardsEl.addEventListener("click", e => {
   const use = e.target.closest("[data-use]"); if (use){ bT.value = use.dataset.use; refreshBuilder(true); }
-  const like = e.target.closest("[data-like]"); if (like){ oBrief.value = "Mirip desain " + byId(like.dataset.like).name + ". "; oPkg.value = "custom"; renderOrder(); setTimeout(() => oBrief.focus({ preventScroll:true }), 500); }
+  const like = e.target.closest("[data-like]"); if (like){ oBrief.value = L.similar + byId(like.dataset.like).name + ". "; oPkg.value = "custom"; renderOrder(); setTimeout(() => oBrief.focus({ preventScroll:true }), 500); }
 });
 renderOrder();
 
@@ -853,7 +1016,7 @@ const toastEl = document.getElementById("toast"); let toastT;
 function toast(msg){ toastEl.textContent = msg; toastEl.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => toastEl.hidden = true, 2400); }
 function copy(text, msg){
   const fallback = () => { const ta = document.createElement("textarea"); ta.value = text; document.body.appendChild(ta); ta.select();
-    let ok = false; try { ok = document.execCommand("copy"); } catch(e){} ta.remove(); toast(ok ? msg : "Gagal menyalin. Pilih teksnya lalu salin manual."); };
+    let ok = false; try { ok = document.execCommand("copy"); } catch(e){} ta.remove(); toast(ok ? msg : L.copyFail); };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast(msg), fallback);
   else fallback();
 }
