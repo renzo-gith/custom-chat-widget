@@ -19,4 +19,6 @@ Situs: https://renzo-gith.github.io/custom-chat-widget/
 
 Link OBS: `https://renzo-gith.github.io/custom-chat-widget/NamaWidget/SSN-NamaWidget.html?session=KODE_SESSION`
 
+Demo tanpa session (untuk atur posisi di OBS atau kirim ke klien): `...SSN-NamaWidget.html?demo=1`
+
 Parameter opsional: `&limit=8` `&autohide=30` `&scale=1` `&owner=NamaStreamer` `&onlytype=youtube,twitch` `&hidetype=tiktok` `&showevents=raid` `&mindono=1`
