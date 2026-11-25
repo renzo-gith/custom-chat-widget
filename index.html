@@ -231,6 +231,20 @@ footer a{color:var(--ink)}
 
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:50;padding:12px 18px;border-radius:999px;background:var(--ink);color:var(--paper);font-weight:700;font-size:14px}
 
+/* Scroll: muncul saat masuk layar + navbar */
+.nav{transition:box-shadow .25s ease}
+.nav.scrolled{box-shadow:0 8px 24px -16px rgba(29,27,46,.35)}
+.links a:not(.btn){position:relative;transition:color .2s ease}
+.links a:not(.btn)::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;border-radius:2px;background:currentColor;transform:scaleX(0);transition:transform .25s ease}
+.links a.active:not(.btn){color:var(--highlight)}
+.links a.active:not(.btn)::after{transform:scaleX(1)}
+.js-rv .rv{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.7,.2,1);transition-delay:var(--rv-d,0ms)}
+.js-rv .rv.in{opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){
+  .js-rv .rv{opacity:1;transform:none;transition:none}
+  .nav,.links a:not(.btn),.links a:not(.btn)::after{transition:none}
+}
+
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   .btn,.pk,.pk-name{transition:none}
@@ -1022,6 +1036,47 @@ function copy(text, msg){
 }
 document.getElementById("yr").textContent = new Date().getFullYear();
 renderCards("all");
+// ===== Efek scroll =====
+(function(){
+  const nav = document.querySelector(".nav");
+  const onScroll = () => nav.classList.toggle("scrolled", window.scrollY > 4);
+  addEventListener("scroll", onScroll, { passive:true }); onScroll();
+
+  // Menu aktif sesuai section yang sedang dilihat
+  const links = [...document.querySelectorAll('.links a[href^="#"]:not(.btn)')];
+  const secs = links.map(a => document.querySelector(a.getAttribute("href"))).filter(Boolean);
+  const vis = new Map();
+  const spy = new IntersectionObserver(es => {
+    es.forEach(e => vis.set(e.target, e.isIntersecting));
+    const cur = secs.find(s => vis.get(s));
+    links.forEach(a => {
+      const on = !!cur && a.getAttribute("href") === "#" + cur.id;
+      a.classList.toggle("active", on);
+      if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
+    });
+  }, { rootMargin:"-45% 0px -50% 0px" });
+  secs.forEach(s => spy.observe(s));
+
+  // Muncul saat masuk layar (sekali saja)
+  if (reduceMotion || !("IntersectionObserver" in window)) return;
+  document.documentElement.classList.add("js-rv");
+  const done = el => { el.classList.remove("rv", "in"); el.style.removeProperty("--rv-d"); };
+  const rv = new IntersectionObserver(es => {
+    es.filter(e => e.isIntersecting).forEach((e, i) => {
+      const el = e.target; rv.unobserve(el);
+      el.style.setProperty("--rv-d", Math.min(i, 5) * 70 + "ms");
+      el.classList.add("in");
+      el.addEventListener("transitionend", ev => { if (ev.target === el && ev.propertyName === "opacity") done(el); });
+      setTimeout(() => done(el), 1200);
+    });
+  }, { rootMargin:"0px 0px -8% 0px", threshold:0.12 });
+  const watch = el => { if (!el || el.classList.contains("rv")) return; el.classList.add("rv"); rv.observe(el); };
+  const SEL = ".hero .stack, .hero-side, .sec-head, .filter, .card, .panel, .steps li, .pk, .port, .order-form, .order-preview";
+  document.querySelectorAll(SEL).forEach(watch);
+  // Kartu template yang dirender ulang (filter / tampilkan semua)
+  new MutationObserver(ms => ms.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1 && n.matches(".card")) watch(n); })))
+    .observe(document.getElementById("cards"), { childList:true });
+})();
 </script>
 </body>
 </html>
