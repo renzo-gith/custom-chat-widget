@@ -238,10 +238,12 @@ footer a{color:var(--ink)}
 .links a:not(.btn)::after{content:"";position:absolute;left:0;right:0;bottom:-6px;height:2px;border-radius:2px;background:currentColor;transform:scaleX(0);transition:transform .25s ease}
 .links a.active:not(.btn){color:var(--highlight)}
 .links a.active:not(.btn)::after{transform:scaleX(1)}
-.js-rv .rv{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s cubic-bezier(.2,.7,.2,1);transition-delay:var(--rv-d,0ms)}
-.js-rv .rv.in{opacity:1;transform:none}
+.js-rv .rv{opacity:0;translate:0 16px;transition:opacity .45s ease var(--rv-d,0ms),translate .45s cubic-bezier(.2,.7,.2,1) var(--rv-d,0ms)}
+.js-rv .rv.up{translate:0 -16px}
+.js-rv .rv.in{opacity:1;translate:none}
+.js-rv .pk.rv{transition:opacity .45s ease var(--rv-d,0ms),translate .45s cubic-bezier(.2,.7,.2,1) var(--rv-d,0ms),transform .2s ease,background-color .2s ease}
 @media (prefers-reduced-motion:reduce){
-  .js-rv .rv{opacity:1;transform:none;transition:none}
+  .js-rv .rv{opacity:1;translate:none;transition:none}
   .nav,.links a:not(.btn),.links a:not(.btn)::after{transition:none}
 }
 
@@ -1057,17 +1059,29 @@ renderCards("all");
   }, { rootMargin:"-45% 0px -50% 0px" });
   secs.forEach(s => spy.observe(s));
 
-  // Muncul saat masuk layar (sekali saja)
+  // Logo: kembali ke paling atas halaman
+  document.querySelector(".brand").addEventListener("click", e => {
+    e.preventDefault();
+    scrollTo({ top:0, behavior: reduceMotion ? "auto" : "smooth" });
+    history.replaceState(null, "", location.pathname + location.search);
+  });
+
+  // Muncul saat masuk layar, menghilang saat keluar layar (berulang)
   if (reduceMotion || !("IntersectionObserver" in window)) return;
   document.documentElement.classList.add("js-rv");
-  const done = el => { el.classList.remove("rv", "in"); el.style.removeProperty("--rv-d"); };
   const rv = new IntersectionObserver(es => {
-    es.filter(e => e.isIntersecting).forEach((e, i) => {
-      const el = e.target; rv.unobserve(el);
-      el.style.setProperty("--rv-d", Math.min(i, 5) * 70 + "ms");
-      el.classList.add("in");
-      el.addEventListener("transitionend", ev => { if (ev.target === el && ev.propertyName === "opacity") done(el); });
-      setTimeout(() => done(el), 1200);
+    let i = 0;
+    es.forEach(e => {
+      const el = e.target;
+      if (e.isIntersecting){
+        el.classList.remove("up");
+        el.style.setProperty("--rv-d", Math.min(i++, 5) * 70 + "ms");
+        el.classList.add("in");
+      } else {
+        el.style.setProperty("--rv-d", "0ms");
+        el.classList.remove("in");
+        el.classList.toggle("up", e.boundingClientRect.top < 0); // keluar lewat atas: hilang ke atas
+      }
     });
   }, { rootMargin:"0px 0px -8% 0px", threshold:0.12 });
   const watch = el => { if (!el || el.classList.contains("rv")) return; el.classList.add("rv"); rv.observe(el); };
