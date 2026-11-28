@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — Alert New Membership YouTube</title>
+<!-- Simulasi halaman chat pop-out YouTube untuk mencoba membership.css.
+     ?bg=1 untuk latar abu-abu, ?auto=1 untuk memunculkan alert otomatis tiap 10 detik. -->
+<link rel="stylesheet" href="membership.css">
+<style>
+  .rz-test { position: fixed; right: 12px; bottom: 12px; z-index: 99; display: flex; gap: 8px; font: 600 14px system-ui, sans-serif; }
+  .rz-test button, .rz-test input { padding: 8px 12px; border-radius: 8px; border: 1px solid #888; font: inherit; }
+  .rz-test button { background: #e46870; color: #fff; border: 0; cursor: pointer; }
+  html.rz-bg, html.rz-bg body { background: #3a3a3a !important; }
+</style>
+</head>
+<body>
+<yt-live-chat-app>
+  <yt-live-chat-renderer>
+    <yt-live-chat-header-renderer>Top chat</yt-live-chat-header-renderer>
+    <div id="contents">
+      <div id="chat">
+        <div id="chat-messages">
+          <yt-live-chat-item-list-renderer>
+            <div id="item-list">
+              <div id="item-scroller" style="overflow-y:scroll;contain:strict">
+                <div id="item-offset" style="transform:translateY(0px)">
+                  <div id="items" style="transform:translateY(0px)"></div>
+                </div>
+              </div>
+            </div>
+          </yt-live-chat-item-list-renderer>
+        </div>
+      </div>
+      <div id="input-panel">Chat...</div>
+    </div>
+  </yt-live-chat-renderer>
+</yt-live-chat-app>
+
+<div class="rz-test">
+  <input id="rz-name" value="Nama Member Baru" aria-label="Nama member">
+  <button type="button" id="rz-go">Tes alert</button>
+</div>
+
+<script>
+const items = document.getElementById("items");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+function chat(name, text){
+  const el = document.createElement("yt-live-chat-text-message-renderer");
+  el.innerHTML = `<span id="author-name">${esc(name)}</span> <span id="message">${esc(text)}</span>`;
+  items.appendChild(el);
+}
+function member(name, milestone){
+  const el = document.createElement("yt-live-chat-membership-item-renderer");
+  if (!milestone) el.setAttribute("show-only-header", "");
+  el.innerHTML = `<div id="card"><div id="header">
+    <yt-img-shadow id="author-photo"><img alt=""></yt-img-shadow>
+    <div id="header-content"><div id="header-content-primary-column"><div id="header-content-inner-column">
+      <yt-live-chat-author-chip><span id="prepend-chat-badges"></span><span id="author-name" class="member">${esc(name)}<span id="chip-badges"></span></span><span id="chat-badges"></span></yt-live-chat-author-chip>
+    </div><div id="header-primary-text">${milestone ? "Member for 6 months" : ""}</div><div id="header-subtext"><span>Welcome to Channel!</span></div></div>
+    <div id="timestamp">12:00</div></div><div id="menu"></div></div>
+    <div id="content"><div id="message">${milestone ? "Sudah 6 bulan!" : ""}</div></div></div>`;
+  items.appendChild(el);
+}
+const q = new URLSearchParams(location.search);
+if (q.has("bg")) document.documentElement.classList.add("rz-bg");
+chat("viewer1", "chat biasa, harus tersembunyi");
+document.getElementById("rz-go").addEventListener("click", () => member(document.getElementById("rz-name").value || "Member"));
+window.rzMember = member; window.rzChat = chat;
+if (q.has("auto")) { member("Nama Member Baru"); setInterval(() => member("Nama Member Baru"), 10000); }
+</script>
+</body>
+</html>

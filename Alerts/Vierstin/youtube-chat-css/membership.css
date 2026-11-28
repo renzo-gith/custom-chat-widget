@@ -1,0 +1,198 @@
+@import url("https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@700&display=swap");
+
+/* =====================================================================
+   Alert New Membership YouTube — Custom CSS untuk OBS
+   Pakai di Browser Source OBS (terpisah dari chat widget):
+     URL    : link chat pop-out YouTube (sama dengan chat widget)
+     Ukuran : 1224 x 723
+     Custom CSS : tempel seluruh isi file ini
+   Hanya menampilkan pengumuman MEMBER BARU.
+   Chat biasa, Super Chat, milestone, dan gift disembunyikan.
+   Butuh OBS 31 atau lebih baru.
+   ===================================================================== */
+
+:root {
+  --rz-ease: cubic-bezier(.5, 0, .5, 1);
+}
+
+/* ---------- Latar transparan, sembunyikan UI chat YouTube ---------- */
+html, body, yt-live-chat-app, yt-live-chat-renderer, #contents, #chat, #chat-messages,
+yt-live-chat-item-list-renderer, #item-list, #item-scroller, #item-offset, #items {
+  background: transparent !important;
+  transform: none !important;
+  contain: none !important;
+  will-change: auto !important;
+  filter: none !important;
+  overflow: visible !important;
+}
+body { overflow: hidden !important; }
+
+yt-live-chat-header-renderer, #ticker, yt-live-chat-ticker-renderer, #panel-pages,
+#input-panel, yt-live-chat-message-input-renderer, yt-live-chat-banner-manager,
+#show-more, #reaction-control-panel-overlay, yt-reaction-control-panel-overlay-view-model,
+#separator, #promo-container { display: none !important; }
+
+/* Semua item chat disembunyikan... */
+#items > * { display: none !important; }
+/* ...kecuali pengumuman member baru */
+#items > yt-live-chat-membership-item-renderer[show-only-header] { display: block !important; }
+/* Milestone (ada teks "Member for X months") tetap disembunyikan */
+#items > yt-live-chat-membership-item-renderer:has(#header-primary-text:not(:empty)) { display: none !important; }
+
+/* ---------- Panggung alert (1224 x 723, sesuai frame Figma) ---------- */
+yt-live-chat-membership-item-renderer {
+  position: fixed !important;
+  left: 0 !important; top: 0 !important;
+  width: 1224px !important; height: 723px !important;
+  margin: 0 !important; padding: 0 !important;
+  background: none !important;
+  overflow: visible !important;
+  pointer-events: none;
+  animation: rz-life 8.3s linear forwards;
+}
+
+/* Kucing (di belakang papan) */
+yt-live-chat-membership-item-renderer::before,
+yt-live-chat-membership-item-renderer::after {
+  content: "";
+  position: absolute;
+  background: center / 100% 100% no-repeat;
+  transform-origin: 50% 50%;
+}
+yt-live-chat-membership-item-renderer::before {
+  left: 379px; top: 68px; width: 369px; height: 453px;
+  background-image: url("https://renzo-gith.github.io/custom-chat-widget/Alerts/Vierstin/cat.png");
+  z-index: 0;
+  animation:
+    rz-show .032s linear .201s both,
+    rz-pop .576s linear .201s both,
+    rz-cat-rot .264s var(--rz-ease) .144s both,
+    rz-cat-scale 8.3s linear both;
+}
+/* Ekor */
+yt-live-chat-membership-item-renderer::after {
+  left: 547px; top: 148px; width: 436px; height: 436px;
+  background-image: url("https://renzo-gith.github.io/custom-chat-widget/Alerts/Vierstin/tail.png");
+  z-index: 1;
+  animation:
+    rz-show .032s linear .203s both,
+    rz-pop .576s linear .203s both,
+    rz-tail-scale .067s linear .203s both,
+    rz-tail-wag 8.3s linear both;
+}
+
+/* Papan + sulur + bunga */
+yt-live-chat-membership-item-renderer #card {
+  position: absolute !important;
+  left: 183px !important; top: 347px !important;
+  width: 895px !important; height: 308px !important;
+  margin: 0 !important; padding: 0 !important;
+  border: 0 !important; border-radius: 0 !important; box-shadow: none !important;
+  background: url("https://renzo-gith.github.io/custom-chat-widget/Alerts/Vierstin/box.png") center / 100% 100% no-repeat !important;
+  z-index: 2;
+  animation: rz-box .787s linear both;
+}
+yt-live-chat-membership-item-renderer #card *,
+yt-live-chat-membership-item-renderer #header {
+  position: static !important;
+  background: none !important;
+  padding: 0 !important; margin: 0 !important;
+  border: 0 !important; box-shadow: none !important;
+}
+
+/* Bagian bawaan YouTube yang tidak dipakai */
+yt-live-chat-membership-item-renderer #author-photo,
+yt-live-chat-membership-item-renderer #timestamp,
+yt-live-chat-membership-item-renderer #menu,
+yt-live-chat-membership-item-renderer #content,
+yt-live-chat-membership-item-renderer #chip-badges,
+yt-live-chat-membership-item-renderer #chat-badges,
+yt-live-chat-membership-item-renderer #prepend-chat-badges,
+yt-live-chat-membership-item-renderer #header-primary-text { display: none !important; }
+
+/* Nama member (Lilita One 72, abu muda + garis gelap) */
+yt-live-chat-membership-item-renderer #author-name {
+  position: absolute !important;
+  left: 127px !important; top: 74px !important;
+  width: 641px !important; height: 82px !important;
+  display: block !important;
+  font: 400 72px/82px "Lilita One", sans-serif !important;
+  color: #E0E0E0 !important;
+  text-align: center !important;
+  white-space: nowrap !important; overflow: hidden !important; text-overflow: ellipsis !important;
+  padding: 0 8px !important;
+  text-shadow:
+    0 3px 0 #1E1E1E, 0 -3px 0 #1E1E1E, 3px 0 0 #1E1E1E, -3px 0 0 #1E1E1E,
+    2px 2px 0 #1E1E1E, -2px 2px 0 #1E1E1E, 2px -2px 0 #1E1E1E, -2px -2px 0 #1E1E1E !important;
+}
+
+/* "Welcome to Membership" (Poppins Bold 48) menggantikan teks YouTube */
+yt-live-chat-membership-item-renderer #header-subtext {
+  position: absolute !important;
+  left: 0 !important; top: 156px !important;
+  width: 895px !important; height: 72px !important;
+  display: block !important;
+  font-size: 0 !important; color: transparent !important;
+}
+yt-live-chat-membership-item-renderer #header-subtext * { display: none !important; }
+yt-live-chat-membership-item-renderer #header-subtext::after {
+  content: "Welcome to Membership";
+  display: block;
+  font: 700 48px/72px "Poppins", sans-serif;
+  color: #39280D;
+  text-align: center;
+  text-shadow:
+    0 2px 0 #F0F0F0, 0 -2px 0 #F0F0F0, 2px 0 0 #F0F0F0, -2px 0 0 #F0F0F0,
+    1.5px 1.5px 0 #F0F0F0, -1.5px 1.5px 0 #F0F0F0, 1.5px -1.5px 0 #F0F0F0, -1.5px -1.5px 0 #F0F0F0;
+}
+
+/* ---------- Animasi (dari keyframe Figma Motion, total 8,3 detik) ---------- */
+/* Seluruh alert: tampil, lalu menghilang di 7,53–8,0 dtk */
+@keyframes rz-life {
+  0%     { opacity: 1; visibility: visible; }
+  90.72% { opacity: 1; animation-timing-function: var(--rz-ease); }
+  96.46% { opacity: 0; }
+  100%   { opacity: 0; visibility: hidden; }
+}
+@keyframes rz-show { from { opacity: 0; } to { opacity: 1; } }
+
+/* Papan: naik 251px dengan pantulan */
+@keyframes rz-box {
+  0%   { translate: 0 251px; opacity: 0; animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+  25%  { opacity: 1; }
+  58%  { translate: 0 -16px; animation-timing-function: cubic-bezier(.4, 0, .6, 1); }
+  78%  { translate: 0 6px; animation-timing-function: cubic-bezier(.4, 0, .6, 1); }
+  100% { translate: 0 0; opacity: 1; }
+}
+/* Kucing & ekor: lompat 131px dengan pantulan */
+@keyframes rz-pop {
+  0%   { translate: 0 131px; animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+  58%  { translate: 0 -10px; animation-timing-function: cubic-bezier(.4, 0, .6, 1); }
+  78%  { translate: 0 4px; animation-timing-function: cubic-bezier(.4, 0, .6, 1); }
+  100% { translate: 0 0; }
+}
+/* Kucing: miring lalu lurus */
+@keyframes rz-cat-rot { from { rotate: -21.9deg; } to { rotate: 0deg; } }
+/* Kucing: gepeng saat muncul, lalu bernapas */
+@keyframes rz-cat-scale {
+  0%     { scale: 1 .3; }
+  2.42%  { scale: 1 .3; }
+  3.23%  { scale: 1 1.02; animation-timing-function: var(--rz-ease); }
+  26.47% { scale: 1.02 1; animation-timing-function: var(--rz-ease); }
+  48.39% { scale: 1 1.02; animation-timing-function: var(--rz-ease); }
+  68.35% { scale: 1.02 1; animation-timing-function: var(--rz-ease); }
+  90.67% { scale: 1 1.02; }
+  100%   { scale: 1 1.02; }
+}
+/* Ekor: gepeng saat muncul */
+@keyframes rz-tail-scale { from { scale: 1 .3; } to { scale: 1 1; } }
+/* Ekor: bergoyang 0–10 derajat */
+@keyframes rz-tail-wag {
+  0%     { rotate: 0deg; }
+  4.93%  { rotate: 0deg; animation-timing-function: var(--rz-ease); }
+  26.47% { rotate: -10deg; animation-timing-function: var(--rz-ease); }
+  48.41% { rotate: 0deg; animation-timing-function: var(--rz-ease); }
+  68.35% { rotate: -10deg; animation-timing-function: var(--rz-ease); }
+  90.69% { rotate: 0deg; }
+  100%   { rotate: 0deg; }
+}

@@ -1,0 +1,135 @@
+@import url("https://fonts.googleapis.com/css2?family=Lilita+One&family=Poppins:wght@700&display=swap");
+
+/* =====================================================================
+   Vierstin — Alert New Membership YouTube (Streamlabs Alert Box)
+   Ukuran Browser Source / widget: 1224 x 723
+   Animasi mengikuti keyframe Figma Motion (total 8,3 detik)
+   ===================================================================== */
+
+html, body { margin: 0; padding: 0; background: transparent; overflow: hidden; }
+
+.vs-stage {
+  --vs-ease: cubic-bezier(.5, 0, .5, 1);
+  position: relative;
+  width: 1224px; height: 723px;
+  margin: 0 auto;
+  overflow: visible;
+  pointer-events: none;
+  animation: vs-life 8.3s linear forwards;
+}
+
+.vs-cat, .vs-tail, .vs-box {
+  position: absolute;
+  background: center / 100% 100% no-repeat;
+  transform-origin: 50% 50%;
+}
+
+/* Kucing (di belakang papan) */
+.vs-cat {
+  left: 379px; top: 68px; width: 369px; height: 453px;
+  background-image: url("https://renzo-gith.github.io/custom-chat-widget/Alerts/Vierstin/cat.png");
+  z-index: 0;
+  animation:
+    vs-show .032s linear .201s both,
+    vs-pop .576s linear .201s both,
+    vs-cat-rot .264s var(--vs-ease) .144s both,
+    vs-cat-scale 8.3s linear both;
+}
+
+/* Ekor */
+.vs-tail {
+  left: 547px; top: 148px; width: 436px; height: 436px;
+  background-image: url("https://renzo-gith.github.io/custom-chat-widget/Alerts/Vierstin/tail.png");
+  z-index: 1;
+  animation:
+    vs-show .032s linear .203s both,
+    vs-pop .576s linear .203s both,
+    vs-tail-scale .067s linear .203s both,
+    vs-tail-wag 8.3s linear both;
+}
+
+/* Papan + sulur + bunga */
+.vs-box {
+  left: 183px; top: 347px; width: 895px; height: 308px;
+  background-image: url("https://renzo-gith.github.io/custom-chat-widget/Alerts/Vierstin/box.png");
+  z-index: 2;
+  animation: vs-box .787s linear both;
+}
+
+/* Nama member (Lilita One 72, abu muda + garis gelap) */
+.vs-name {
+  position: absolute;
+  left: 127px; top: 74px; width: 641px; height: 82px;
+  box-sizing: border-box; padding: 0 8px;
+  font: 400 72px/82px "Lilita One", sans-serif;
+  color: #E0E0E0;
+  text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-shadow:
+    0 3px 0 #1E1E1E, 0 -3px 0 #1E1E1E, 3px 0 0 #1E1E1E, -3px 0 0 #1E1E1E,
+    2px 2px 0 #1E1E1E, -2px 2px 0 #1E1E1E, 2px -2px 0 #1E1E1E, -2px -2px 0 #1E1E1E;
+}
+
+/* "Welcome to Membership" (Poppins Bold 48) */
+.vs-sub {
+  position: absolute;
+  left: 0; top: 156px; width: 895px; height: 72px;
+  font: 700 48px/72px "Poppins", sans-serif;
+  color: #39280D;
+  text-align: center;
+  white-space: nowrap;
+  text-shadow:
+    0 2px 0 #F0F0F0, 0 -2px 0 #F0F0F0, 2px 0 0 #F0F0F0, -2px 0 0 #F0F0F0,
+    1.5px 1.5px 0 #F0F0F0, -1.5px 1.5px 0 #F0F0F0, 1.5px -1.5px 0 #F0F0F0, -1.5px -1.5px 0 #F0F0F0;
+}
+
+/* ---------- Animasi ---------- */
+/* Seluruh alert: tampil, lalu menghilang di 7,53–8,0 dtk */
+@keyframes vs-life {
+  0%     { opacity: 1; visibility: visible; }
+  90.72% { opacity: 1; animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+  96.46% { opacity: 0; }
+  100%   { opacity: 0; visibility: hidden; }
+}
+@keyframes vs-show { from { opacity: 0; } to { opacity: 1; } }
+
+/* Papan: naik 251px dengan pantulan */
+@keyframes vs-box {
+  0%   { translate: 0 251px; opacity: 0; animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+  25%  { opacity: 1; }
+  58%  { translate: 0 -16px; animation-timing-function: cubic-bezier(.4, 0, .6, 1); }
+  78%  { translate: 0 6px; animation-timing-function: cubic-bezier(.4, 0, .6, 1); }
+  100% { translate: 0 0; opacity: 1; }
+}
+/* Kucing & ekor: lompat 131px dengan pantulan */
+@keyframes vs-pop {
+  0%   { translate: 0 131px; animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+  58%  { translate: 0 -10px; animation-timing-function: cubic-bezier(.4, 0, .6, 1); }
+  78%  { translate: 0 4px; animation-timing-function: cubic-bezier(.4, 0, .6, 1); }
+  100% { translate: 0 0; }
+}
+/* Kucing: miring lalu lurus */
+@keyframes vs-cat-rot { from { rotate: -21.9deg; } to { rotate: 0deg; } }
+/* Kucing: gepeng saat muncul, lalu bernapas */
+@keyframes vs-cat-scale {
+  0%     { scale: 1 .3; }
+  2.42%  { scale: 1 .3; }
+  3.23%  { scale: 1 1.02; animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+  26.47% { scale: 1.02 1; animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+  48.39% { scale: 1 1.02; animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+  68.35% { scale: 1.02 1; animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+  90.67% { scale: 1 1.02; }
+  100%   { scale: 1 1.02; }
+}
+/* Ekor: gepeng saat muncul */
+@keyframes vs-tail-scale { from { scale: 1 .3; } to { scale: 1 1; } }
+/* Ekor: bergoyang 0–10 derajat */
+@keyframes vs-tail-wag {
+  0%     { rotate: 0deg; }
+  4.93%  { rotate: 0deg; animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+  26.47% { rotate: -10deg; animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+  48.41% { rotate: 0deg; animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+  68.35% { rotate: -10deg; animation-timing-function: cubic-bezier(.5, 0, .5, 1); }
+  90.69% { rotate: 0deg; }
+  100%   { rotate: 0deg; }
+}

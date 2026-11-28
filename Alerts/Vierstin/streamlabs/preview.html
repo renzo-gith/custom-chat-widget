@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Preview — Vierstin Membership Alert (Streamlabs)</title>
+<!-- Mencoba alert.html + alert.css + alert.js tanpa Streamlabs.
+     ?bg=1 latar abu-abu, ?auto=1 alert muncul otomatis tiap 10 detik, ?name=Nama untuk nama awal. -->
+<link rel="stylesheet" href="alert.css">
+<style>
+  .pv-test { position: fixed; right: 12px; bottom: 12px; z-index: 99; display: flex; gap: 8px; font: 600 14px system-ui, sans-serif; }
+  .pv-test button, .pv-test input { padding: 8px 12px; border-radius: 8px; border: 1px solid #888; font: inherit; }
+  .pv-test button { background: #e46870; color: #fff; border: 0; cursor: pointer; }
+  html.pv-bg, html.pv-bg body { background: #3a3a3a; }
+</style>
+</head>
+<body>
+<div id="pv-slot"></div>
+<div class="pv-test">
+  <input id="pv-name" aria-label="Nama member">
+  <button type="button" id="pv-go">Tes alert</button>
+</div>
+<script>
+const q = new URLSearchParams(location.search);
+if (q.has("bg")) document.documentElement.classList.add("pv-bg");
+const nameEl = document.getElementById("pv-name");
+nameEl.value = q.get("name") || "Nama Member Baru";
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+let tpl = "";
+async function play(name){
+  if (!tpl) tpl = await (await fetch("alert.html")).text();
+  const slot = document.getElementById("pv-slot");
+  slot.innerHTML = tpl.replace(/\{name\}/g, esc(name));
+  const s = document.createElement("script"); s.src = "alert.js?t=" + Date.now(); slot.appendChild(s);
+}
+document.getElementById("pv-go").addEventListener("click", () => play(nameEl.value || "Member"));
+window.pvPlay = play;
+play(nameEl.value);
+if (q.has("auto")) setInterval(() => play(nameEl.value || "Member"), 10000);
+</script>
+</body>
+</html>
